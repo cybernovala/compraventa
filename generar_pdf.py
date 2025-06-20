@@ -53,7 +53,7 @@ def crear_pdf(texto):
             pdf.ln(3)
 
         if texto_mayus.startswith("OTROS:"):
-            pdf.ln(3)
+            pass  # No aplicar salto aquí
 
         if texto_mayus.startswith("SEGUNDA:"):
             pdf.ln(3)
@@ -67,14 +67,25 @@ def crear_pdf(texto):
             pdf.multi_cell(0, 9, linea, align="J")
             continue
 
-        # Cláusula de precio → negrita solo en el monto
-        if "PRECIO Y FORMA DE PAGO" in texto_mayus and ':' in linea:
-            parte1, parte2 = linea.split(':', 1)
-            pdf.set_font("Arial", "", 11)
-            pdf.write(5, f"{parte1.strip()}: ")
-            pdf.set_font("Arial", "B", 11)
-            pdf.write(5, f"{parte2.strip()}\n")
-            continue
+        # PRECIO Y FORMA DE PAGO → detectar monto y ponerlo en negrita
+        if "PRECIO Y FORMA DE PAGO" in texto_mayus and "$" in linea:
+            inicio = linea.find("$")
+            if inicio != -1:
+                antes = linea[:inicio]
+                monto_y_despues = linea[inicio:]
+                partes = monto_y_despues.split(" ", 1)
+                monto = partes[0]
+                resto = partes[1] if len(partes) > 1 else ""
+
+                pdf.set_font("Arial", "", 11)
+                pdf.write(5, antes)
+
+                pdf.set_font("Arial", "B", 11)
+                pdf.write(5, monto + " ")
+
+                pdf.set_font("Arial", "", 11)
+                pdf.write(5, resto + "\n")
+                continue
 
         # Negrita para datos antes de cláusula 3 (excepto OBJETO y PRECIO)
         if not clausula_3_detectada and ':' in linea:
