@@ -34,21 +34,21 @@ def crear_pdf(texto):
     pdf.multi_cell(0, 10, cuerpo, align="J")
 
     # Espacio antes de firmas
-    pdf.ln(30)
+    pdf.ln(20)
 
-    # Pie de firma del VENDEDOR
+    # Pie de firma del VENDEDOR (alineado y compacto)
     pdf.set_font("Arial", "", 12)
-    pdf.cell(0, 10, "_____________________________", ln=True, align="C")
-    pdf.cell(0, 10, f"{firma_vendedor}", ln=True, align="C")
-    pdf.cell(0, 10, f"RUT: {rut_vendedor}", ln=True, align="C")
+    pdf.cell(0, 8, "_____________________________", ln=True, align="C")
+    pdf.cell(0, 6, firma_vendedor, ln=True, align="C")
+    pdf.cell(0, 6, f"RUT: {rut_vendedor}", ln=True, align="C")
 
     # Espacio entre firmas
-    pdf.ln(25)
+    pdf.ln(15)
 
-    # Pie de firma del COMPRADOR
-    pdf.cell(0, 10, "_____________________________", ln=True, align="C")
-    pdf.cell(0, 10, f"{firma_comprador}", ln=True, align="C")
-    pdf.cell(0, 10, f"RUT: {rut_comprador}", ln=True, align="C")
+    # Pie de firma del COMPRADOR (alineado y compacto)
+    pdf.cell(0, 8, "_____________________________", ln=True, align="C")
+    pdf.cell(0, 6, firma_comprador, ln=True, align="C")
+    pdf.cell(0, 6, f"RUT: {rut_comprador}", ln=True, align="C")
 
     # Exportar el PDF a bytes
     pdf_bytes = pdf.output(dest="S").encode("latin1")
