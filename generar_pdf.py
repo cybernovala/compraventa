@@ -77,6 +77,7 @@ def crear_pdf(texto):
                 monto = partes[0]
                 resto = partes[1] if len(partes) > 1 else ""
 
+                # Frase completa sin negrita, solo monto en negrita
                 pdf.set_font("Arial", "", 11)
                 pdf.write(5, antes)
 
@@ -87,8 +88,10 @@ def crear_pdf(texto):
                 pdf.write(5, resto + "\n")
                 continue
 
-        # Negrita para datos antes de cláusula 3 (excepto OBJETO y PRECIO)
-        if not clausula_3_detectada and ':' in linea:
+        # Negrita para datos antes de cláusula 3, excluyendo "PRECIO Y FORMA DE PAGO"
+        if (not clausula_3_detectada and ':' in linea and 
+            "PRECIO Y FORMA DE PAGO" not in texto_mayus and 
+            "OBJETO DEL CONTRATO" not in texto_mayus):
             parte1, parte2 = linea.split(':', 1)
             pdf.set_font("Arial", "", 11)
             pdf.write(5, f"{parte1.strip()}: ")
