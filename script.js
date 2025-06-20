@@ -77,41 +77,42 @@ function recogerDatos() {
 }
 
 async function generarPDF() {
-  const contenido = `
+  const datos = recogerDatos();
+  const texto = `
 CONTRATO DE COMPRAVENTA DE VEHÍCULO
 
-${document.getElementById("fecha").value.toUpperCase()}
+${datos.fecha.toUpperCase()}
 
 Comparecen:
 
 1. Vendedor:
-Nombre: ${document.getElementById("nombre_vendedor").value}
-RUT: ${document.getElementById("rut_vendedor").value}
-Domicilio: ${document.getElementById("domicilio_vendedor").value}
-Teléfono: ${document.getElementById("telefono_vendedor").value}
+Nombre: ${datos.nombre_vendedor}
+RUT: ${datos.rut_vendedor}
+Domicilio: ${datos.domicilio_vendedor}
+Teléfono: ${datos.telefono_vendedor}
 
 2. Comprador:
-Nombre: ${document.getElementById("nombre_comprador").value}
-RUT: ${document.getElementById("rut_comprador").value}
-Domicilio: ${document.getElementById("domicilio_comprador").value}
-Teléfono: ${document.getElementById("telefono_comprador").value}
+Nombre: ${datos.nombre_comprador}
+RUT: ${datos.rut_comprador}
+Domicilio: ${datos.domicilio_comprador}
+Teléfono: ${datos.telefono_comprador}
 
 Ambas partes acuerdan celebrar el presente contrato de compraventa de vehículo, de acuerdo a las siguientes cláusulas:
 
 PRIMERA: Objeto del contrato
 El vendedor se compromete a vender al comprador, quien compra en este acto, el vehículo de características siguientes:
 
-Marca: ${document.getElementById("marca").value}
-Modelo: ${document.getElementById("modelo").value}
-Año de fabricación: ${document.getElementById("anio").value}
-Número de serie (VIN): ${document.getElementById("vin").value}
-Patente: ${document.getElementById("patente").value}
-Color: ${document.getElementById("color").value}
-Otros: ${document.getElementById("otros").value}
+Marca: ${datos.marca}
+Modelo: ${datos.modelo}
+Año de fabricación: ${datos.anio}
+Número de serie (VIN): ${datos.vin}
+Patente: ${datos.patente}
+Color: ${datos.color}
+Otros: ${datos.otros}
 
 SEGUNDA: Precio y forma de pago
-El precio total de la compraventa es de ${document.getElementById("monto").value}, que el comprador pagará al vendedor de la siguiente forma:
-${document.getElementById("forma_pago").value}
+El precio total de la compraventa es de ${datos.monto}, que el comprador pagará al vendedor de la siguiente forma:
+${datos.forma_pago}
 
 TERCERA: Entrega del vehículo
 El vendedor se compromete a entregar el vehículo al comprador en el estado que se encuentra, en el domicilio del vendedor o en otro lugar acordado.
@@ -137,16 +138,13 @@ En caso de incumplimiento por cualquiera de las partes, se recurrirá a acciones
 NOVENA: Jurisdicción y resolución de conflictos
 Para efectos legales derivados del contrato, se someten a la jurisdicción de los tribunales de la ciudad.
 
-FIRMAS:
-
-VENDEDOR: ${document.getElementById("nombre_vendedor").value}
-                RUT: ${document.getElementById("rut_vendedor").value}
-
-COMPRADOR: ${document.getElementById("nombre_comprador").value}
-                   RUT: ${document.getElementById("rut_comprador").value}
+${datos.nombre_vendedor}
+${datos.rut_vendedor}
+${datos.nombre_comprador}
+${datos.rut_comprador}
 `.toUpperCase();
 
-  const blob = new Blob([JSON.stringify({ contenido })], {
+  const blob = new Blob([JSON.stringify({ contenido: texto })], {
     type: "application/json"
   });
 
