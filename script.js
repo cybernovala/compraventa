@@ -103,7 +103,7 @@ async function generarPDF() {
     type: "application/json"
   });
 
-  const response = await fetch("https://compraventa-vehiculo.onrender.com/generar_pdf", {
+  const response = await fetch("https://compraventa-5lhy.onrender.com/generar_pdf", {
     method: "POST",
     body: blob,
     headers: { "Content-Type": "application/json" }
