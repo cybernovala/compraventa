@@ -29,37 +29,38 @@ def crear_pdf(texto):
     pdf.set_font("Arial", "B", 18)
     pdf.cell(0, 15, titulo, ln=True, align="C")
 
-    # Fecha alineada a la derecha
-    pdf.set_font("Arial", "", 12)
+    # Fecha alineada a la derecha (tamaño 11)
+    pdf.set_font("Arial", "", 11)
     pdf.cell(0, 10, fecha, ln=True, align="R")
     pdf.ln(5)
 
-    # Cuerpo del contrato justificado
-    pdf.set_font("Arial", "", 12)
-    pdf.multi_cell(0, 10, cuerpo, align="J")
+    # Cuerpo del contrato justificado (tamaño 11)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 9, cuerpo, align="J")
 
     # Espacio antes de firmas
-    pdf.ln(30)
+    pdf.ln(25)
 
     # Pie de firma: en columnas alineadas
     page_width = pdf.w - 2 * pdf.l_margin
     col_width = page_width / 2
     y = pdf.get_y()
 
-    # Línea
+    # Línea para firmas
     pdf.set_y(y)
     pdf.set_x(pdf.l_margin)
     pdf.cell(col_width, 8, "_____________________________", 0, 0, "C")
     pdf.set_x(pdf.l_margin + col_width)
     pdf.cell(col_width, 8, "_____________________________", 0, 1, "C")
 
-    # Nombres
+    # Nombres (tamaño 11)
+    pdf.set_font("Arial", "", 11)
     pdf.set_x(pdf.l_margin)
     pdf.cell(col_width, 7, firma_vendedor, 0, 0, "C")
     pdf.set_x(pdf.l_margin + col_width)
     pdf.cell(col_width, 7, firma_comprador, 0, 1, "C")
 
-    # RUTs
+    # RUTs (tamaño 11)
     pdf.set_x(pdf.l_margin)
     pdf.cell(col_width, 7, f"RUT: {rut_vendedor}", 0, 0, "C")
     pdf.set_x(pdf.l_margin + col_width)
