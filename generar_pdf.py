@@ -33,7 +33,26 @@ def crear_pdf(texto):
     for i, linea in enumerate(cuerpo_lineas):
         texto_mayus = linea.upper()
 
-        # Saltos de línea personalizados
+        # Detectar inicio de cláusulas para espacio extra
+        clausulas_iniciales = [
+            "COMPARECEN:",
+            "PRIMERA:",
+            "SEGUNDA:",
+            "TERCERA:",
+            "CUARTA:",
+            "QUINTA:",
+            "SEXTA:",
+            "SÉPTIMA:",
+            "OCTAVA:",
+            "NOVENA:",
+            "DÉCIMA:",
+            # Agrega más si es necesario
+        ]
+        # Si la línea es inicio de cláusula, agregar espacio antes
+        if any(texto_mayus.startswith(clausula) for clausula in clausulas_iniciales):
+            pdf.ln(5)
+
+        # Saltos de línea personalizados ya existentes
         if texto_mayus == "COMPARECEN:":
             pdf.set_font("Arial", "", 11)
             pdf.cell(0, 9, linea.strip(), ln=True)
@@ -44,9 +63,6 @@ def crear_pdf(texto):
             pdf.ln(3)
 
         if texto_mayus.startswith("AMBAS PARTES ACUERDAN"):
-            pdf.ln(3)
-
-        if texto_mayus.startswith("PRIMERA:"):
             pdf.ln(3)
 
         if texto_mayus.startswith("VEHÍCULO DE CARACTERÍSTICAS SIGUIENTES:"):
