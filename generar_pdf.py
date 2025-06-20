@@ -21,7 +21,7 @@ def crear_pdf(texto):
     pdf.set_auto_page_break(auto=True, margin=15)
 
     # Título centrado, negrita, grande
-    pdf.set_font("Arial", "B", 22)  # puedes usar 28 si deseas más grande
+    pdf.set_font("Arial", "B", 22)
     pdf.cell(0, 15, titulo, ln=True, align="C")
 
     # Fecha alineada a la derecha
@@ -33,23 +33,22 @@ def crear_pdf(texto):
     pdf.set_font("Arial", "", 12)
     pdf.multi_cell(0, 10, cuerpo, align="J")
 
-    # Espacio antes de las firmas
+    # Espacio antes de firmas
+    pdf.ln(30)
+
+    # Pie de firma del VENDEDOR
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 10, "_____________________________", ln=True, align="C")
+    pdf.cell(0, 10, f"{firma_vendedor}", ln=True, align="C")
+    pdf.cell(0, 10, f"RUT: {rut_vendedor}", ln=True, align="C")
+
+    # Espacio entre firmas
     pdf.ln(25)
 
-    # Firmas centradas con línea visual
-    pdf.set_font("Arial", "", 12)
-
-    # Firma del vendedor
+    # Pie de firma del COMPRADOR
     pdf.cell(0, 10, "_____________________________", ln=True, align="C")
-    pdf.cell(0, 10, firma_vendedor, ln=True, align="C")
-    pdf.cell(0, 10, rut_vendedor, ln=True, align="C")
-
-    pdf.ln(20)
-
-    # Firma del comprador
-    pdf.cell(0, 10, "_____________________________", ln=True, align="C")
-    pdf.cell(0, 10, firma_comprador, ln=True, align="C")
-    pdf.cell(0, 10, rut_comprador, ln=True, align="C")
+    pdf.cell(0, 10, f"{firma_comprador}", ln=True, align="C")
+    pdf.cell(0, 10, f"RUT: {rut_comprador}", ln=True, align="C")
 
     # Exportar el PDF a bytes
     pdf_bytes = pdf.output(dest="S").encode("latin1")
