@@ -20,33 +20,28 @@ def crear_pdf(texto):
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    # Título centrado
-    pdf.set_font("Arial", "B", 22)
+    # Título centrado, negrita, grande
+    pdf.set_font("Arial", "B", 28)
     pdf.cell(0, 15, titulo, ln=True, align="C")
 
     # Fecha alineada a la derecha
     pdf.set_font("Arial", "", 14)
-    pdf.cell(0, 10, fecha, ln=True, align="L")
+    pdf.cell(0, 10, fecha, ln=True, align="R")
     pdf.ln(5)
 
     # Cuerpo del contrato
-    pdf.set_font("Arial", "", 12)
+    pdf.set_font("Arial", "", 14)
     pdf.multi_cell(0, 10, cuerpo, align="J")
 
     # Espacio antes de firmas
-    pdf.ln(40)
-
-    # Firmas centradas
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 10, "FIRMAS:", ln=True, align="C")
     pdf.ln(25)
 
-    pdf.set_font("Arial", "", 12)
+    # Firmas centradas
+    pdf.set_font("Arial", "", 14)
     pdf.cell(0, 10, firma_vendedor, ln=True, align="C")
     pdf.cell(0, 10, rut_vendedor, ln=True, align="C")
 
-    # Mayor separación entre vendedor y comprador
-    pdf.ln(40)
+    pdf.ln(20)
 
     pdf.cell(0, 10, firma_comprador, ln=True, align="C")
     pdf.cell(0, 10, rut_comprador, ln=True, align="C")
@@ -62,7 +57,6 @@ def crear_pdf(texto):
 
     writer.encrypt(user_password="@@1234@@", owner_password="@@1234@@")
 
-    # Guardar y devolver
     output_buffer = io.BytesIO()
     writer.write(output_buffer)
     output_buffer.seek(0)
