@@ -3,14 +3,11 @@ from PyPDF2 import PdfReader, PdfWriter
 import io
 
 def crear_pdf(texto):
-    # Separar líneas del texto completo
     lineas = [line.strip() for line in texto.strip().split("\n") if line.strip()]
 
-    # Validar longitud mínima
     if len(lineas) < 6:
         raise ValueError("El texto no contiene suficientes líneas para generar el contrato.")
 
-    # Extraer secciones
     titulo = "CONTRATO DE COMPRAVENTA DE VEHÍCULO"
     fecha = lineas[1]
     cuerpo_lineas = lineas[2:-4]
@@ -19,73 +16,91 @@ def crear_pdf(texto):
     firma_comprador = lineas[-2]
     rut_comprador = lineas[-1]
 
-    # Crear PDF
     pdf = FPDF()
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    # Título centrado, negrita, grande
+    # Título
     pdf.set_font("Arial", "B", 18)
     pdf.cell(0, 15, titulo, ln=True, align="C")
 
-    # Fecha alineada a la derecha (tamaño 11)
+    # Fecha
     pdf.set_font("Arial", "", 11)
     pdf.cell(0, 10, fecha, ln=True, align="R")
     pdf.ln(5)
 
-    # Cuerpo del contrato justificado (tamaño 11)
     clausula_3_detectada = False
-    for linea in cuerpo_lineas:
-        if not clausula_3_detectada and 'TERCERA' in linea.upper():
+    for i, linea in enumerate(cuerpo_lineas):
+        texto_mayus = linea.upper()
+
+        # Saltos de línea personalizados
+        if texto_mayus == "COMPARECEN:":
+            pdf.set_font("Arial", "", 11)
+            pdf.cell(0, 9, linea.strip(), ln=True)
+            pdf.ln(3)
+            continue
+
+        if texto_mayus.startswith("2. COMPRADOR:"):
+            pdf.ln(3)
+
+        if texto_mayus.startswith("AMBAS PARTES ACUERDAN"):
+            pdf.ln(3)
+
+        if texto_mayus.startswith("PRIMERA:"):
+            pdf.ln(3)
+
+        if texto_mayus.startswith("VEHÍCULO DE CARACTERÍSTICAS SIGUIENTES:"):
+            pdf.ln(3)
+
+        if texto_mayus.startswith("OTROS:"):
+            pdf.ln(3)
+
+        if texto_mayus.startswith("SEGUNDA:"):
+            pdf.ln(3)
+
+        if not clausula_3_detectada and 'TERCERA' in texto_mayus:
             clausula_3_detectada = True
 
+        # Negrita sólo para los datos del usuario antes de cláusula 3
         if not clausula_3_detectada and ':' in linea:
             parte1, parte2 = linea.split(':', 1)
             pdf.set_font("Arial", "", 11)
-            pdf.write(5, f"{parte1}: ")
+            pdf.write(5, f"{parte1.strip()}: ")
             pdf.set_font("Arial", "B", 11)
             pdf.write(5, f"{parte2.strip()}\n")
         else:
             pdf.set_font("Arial", "", 11)
             pdf.multi_cell(0, 9, linea, align="J")
 
-    # Espacio antes de firmas
+    # Espacio para firmas
     pdf.ln(25)
-
-    # Pie de firma: en columnas alineadas
     page_width = pdf.w - 2 * pdf.l_margin
     col_width = page_width / 2
     y = pdf.get_y()
 
-    # Línea para firmas
     pdf.set_y(y)
     pdf.set_x(pdf.l_margin)
     pdf.cell(col_width, 8, "_____________________________", 0, 0, "C")
     pdf.set_x(pdf.l_margin + col_width)
     pdf.cell(col_width, 8, "_____________________________", 0, 1, "C")
 
-    # Nombres (tamaño 11)
     pdf.set_font("Arial", "B", 11)
     pdf.set_x(pdf.l_margin)
     pdf.cell(col_width, 7, firma_vendedor, 0, 0, "C")
     pdf.set_x(pdf.l_margin + col_width)
     pdf.cell(col_width, 7, firma_comprador, 0, 1, "C")
 
-    # RUTs (tamaño 11)
     pdf.set_x(pdf.l_margin)
     pdf.cell(col_width, 7, f"RUT: {rut_vendedor}", 0, 0, "C")
     pdf.set_x(pdf.l_margin + col_width)
     pdf.cell(col_width, 7, f"RUT: {rut_comprador}", 0, 1, "C")
 
-    # Exportar PDF como bytes
     pdf_bytes = pdf.output(dest="S").encode("latin1")
 
-    # Encriptar PDF
     reader = PdfReader(io.BytesIO(pdf_bytes))
     writer = PdfWriter()
     for page in reader.pages:
         writer.add_page(page)
-
     writer.encrypt(user_password="@@1234@@", owner_password="@@1234@@")
 
     output_buffer = io.BytesIO()
