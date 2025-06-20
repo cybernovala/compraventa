@@ -61,7 +61,22 @@ def crear_pdf(texto):
         if not clausula_3_detectada and 'TERCERA' in texto_mayus:
             clausula_3_detectada = True
 
-        # Negrita sólo para los datos del usuario antes de cláusula 3
+        # OBJETO DEL CONTRATO → sin negrita
+        if "OBJETO DEL CONTRATO" in texto_mayus:
+            pdf.set_font("Arial", "", 11)
+            pdf.multi_cell(0, 9, linea, align="J")
+            continue
+
+        # Cláusula de precio → negrita solo en el monto
+        if "PRECIO Y FORMA DE PAGO" in texto_mayus and ':' in linea:
+            parte1, parte2 = linea.split(':', 1)
+            pdf.set_font("Arial", "", 11)
+            pdf.write(5, f"{parte1.strip()}: ")
+            pdf.set_font("Arial", "B", 11)
+            pdf.write(5, f"{parte2.strip()}\n")
+            continue
+
+        # Negrita para datos antes de cláusula 3 (excepto OBJETO y PRECIO)
         if not clausula_3_detectada and ':' in linea:
             parte1, parte2 = linea.split(':', 1)
             pdf.set_font("Arial", "", 11)
@@ -95,8 +110,8 @@ def crear_pdf(texto):
     pdf.set_x(pdf.l_margin + col_width)
     pdf.cell(col_width, 7, f"RUT: {rut_comprador}", 0, 1, "C")
 
+    # Encriptar PDF
     pdf_bytes = pdf.output(dest="S").encode("latin1")
-
     reader = PdfReader(io.BytesIO(pdf_bytes))
     writer = PdfWriter()
     for page in reader.pages:
