@@ -1,6 +1,7 @@
 from fpdf import FPDF
 from PyPDF2 import PdfReader, PdfWriter
 import io
+import re
 
 def crear_pdf(texto):
     lineas = [line.strip() for line in texto.strip().split("\n") if line.strip()]
@@ -30,7 +31,7 @@ def crear_pdf(texto):
     pdf.ln(5)
 
     clausula_3_detectada = False
-    for i, linea in enumerate(cuerpo_lineas):
+    for linea in cuerpo_lineas:
         texto_mayus = linea.upper()
 
         # Detectar inicio de cláusulas para espacio extra
@@ -50,7 +51,7 @@ def crear_pdf(texto):
         if any(texto_mayus.startswith(clausula) for clausula in clausulas_iniciales):
             pdf.ln(5)
 
-        # Saltos de línea personalizados ya existentes
+        # Saltos personalizados
         if texto_mayus == "COMPARECEN:":
             pdf.set_font("Arial", "", 11)
             pdf.cell(0, 9, linea.strip(), ln=True)
@@ -67,39 +68,42 @@ def crear_pdf(texto):
             pdf.ln(3)
 
         if texto_mayus.startswith("OTROS:"):
-            pass  # No salto aquí
+            pass
 
         if texto_mayus.startswith("SEGUNDA:"):
             pdf.ln(3)
 
-        if not clausula_3_detectada and 'TERCERA' in texto_mayus:
+        if not clausula_3_detectada and "TERCERA" in texto_mayus:
             clausula_3_detectada = True
 
-        # OBJETO DEL CONTRATO → sin negrita
+        # OBJETO DEL CONTRATO
         if "OBJETO DEL CONTRATO" in texto_mayus:
             pdf.set_font("Arial", "", 11)
             pdf.multi_cell(0, 9, linea, align="J")
             continue
 
-        # PRECIO Y FORMA DE PAGO → no en negrita, solo monto con $ en negrita
+        # PRECIO Y FORMA DE PAGO con detección de monto en negrita
         if "PRECIO Y FORMA DE PAGO" in texto_mayus and "$" in linea:
             pdf.set_font("Arial", "", 11)
+            match = re.search(r'(\$\s?\d[\d\.\s]*)', linea)
+            if match:
+                inicio, fin = match.span()
+                antes = linea[:inicio]
+                monto = match.group(1)
+                despues = linea[fin:]
 
-            # Dividir la línea en partes para aislar el monto con $
-            partes = linea.split()
-            for palabra in partes:
-                if palabra.startswith('$'):
-                    pdf.set_font("Arial", "B", 11)
-                    pdf.write(5, palabra + " ")
-                    pdf.set_font("Arial", "", 11)
-                else:
-                    pdf.write(5, palabra + " ")
-            pdf.write(5, "\n")
+                pdf.write(5, antes)
+                pdf.set_font("Arial", "B", 11)
+                pdf.write(5, monto)
+                pdf.set_font("Arial", "", 11)
+                pdf.write(5, despues + "\n")
+            else:
+                pdf.multi_cell(0, 9, linea, align="J")
             continue
 
-        # Negrita para datos antes de cláusula 3, excluyendo "PRECIO Y FORMA DE PAGO"
-        if (not clausula_3_detectada and ':' in linea and 
-            "PRECIO Y FORMA DE PAGO" not in texto_mayus and 
+        # Negrita para datos antes de cláusula 3
+        if (not clausula_3_detectada and ':' in linea and
+            "PRECIO Y FORMA DE PAGO" not in texto_mayus and
             "OBJETO DEL CONTRATO" not in texto_mayus):
             parte1, parte2 = linea.split(':', 1)
             pdf.set_font("Arial", "", 11)
@@ -110,7 +114,7 @@ def crear_pdf(texto):
             pdf.set_font("Arial", "", 11)
             pdf.multi_cell(0, 9, linea, align="J")
 
-    # Espacio para firmas
+    # Firmas
     pdf.ln(25)
     page_width = pdf.w - 2 * pdf.l_margin
     col_width = page_width / 2
