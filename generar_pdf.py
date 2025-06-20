@@ -53,7 +53,7 @@ def crear_pdf(texto):
             pdf.ln(3)
 
         if texto_mayus.startswith("OTROS:"):
-            pass  # No aplicar salto aquí
+            pass  # No salto aquí
 
         if texto_mayus.startswith("SEGUNDA:"):
             pdf.ln(3)
@@ -67,9 +67,9 @@ def crear_pdf(texto):
             pdf.multi_cell(0, 9, linea, align="J")
             continue
 
-        # PRECIO Y FORMA DE PAGO → detectar monto y ponerlo en negrita
-        if "PRECIO Y FORMA DE PAGO" in texto_mayus and "$" in linea:
-            inicio = linea.find("$")
+        # PRECIO Y FORMA DE PAGO → no en negrita, solo el monto
+        if "PRECIO Y FORMA DE PAGO" in texto_mayus and '$' in linea:
+            inicio = linea.find('$')
             if inicio != -1:
                 antes = linea[:inicio]
                 monto_y_despues = linea[inicio:]
