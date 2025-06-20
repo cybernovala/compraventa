@@ -36,17 +36,8 @@ def crear_pdf(texto):
 
         # Detectar inicio de cláusulas para espacio extra
         clausulas_iniciales = [
-            "COMPARECEN:",
-            "PRIMERA:",
-            "SEGUNDA:",
-            "TERCERA:",
-            "CUARTA:",
-            "QUINTA:",
-            "SEXTA:",
-            "SÉPTIMA:",
-            "OCTAVA:",
-            "NOVENA:",
-            "DÉCIMA:",
+            "COMPARECEN:", "PRIMERA:", "SEGUNDA:", "TERCERA:", "CUARTA:", "QUINTA:",
+            "SEXTA:", "SÉPTIMA:", "OCTAVA:", "NOVENA:", "DÉCIMA:"
         ]
         if any(texto_mayus.startswith(clausula) for clausula in clausulas_iniciales):
             pdf.ln(5)
@@ -60,19 +51,14 @@ def crear_pdf(texto):
 
         if texto_mayus.startswith("2. COMPRADOR:"):
             pdf.ln(3)
-
         if texto_mayus.startswith("AMBAS PARTES ACUERDAN"):
             pdf.ln(3)
-
         if texto_mayus.startswith("VEHÍCULO DE CARACTERÍSTICAS SIGUIENTES:"):
             pdf.ln(3)
-
         if texto_mayus.startswith("OTROS:"):
             pass
-
         if texto_mayus.startswith("SEGUNDA:"):
             pdf.ln(3)
-
         if not clausula_3_detectada and "TERCERA" in texto_mayus:
             clausula_3_detectada = True
 
@@ -82,19 +68,22 @@ def crear_pdf(texto):
             pdf.multi_cell(0, 9, linea, align="J")
             continue
 
-        # PRECIO Y FORMA DE PAGO con detección de monto en negrita
+        # PRECIO Y FORMA DE PAGO con monto en negrita
         if "PRECIO Y FORMA DE PAGO" in texto_mayus and "$" in linea:
             pdf.set_font("Arial", "", 11)
             match = re.search(r'(\$\s?\d[\d\.\s]*)', linea)
             if match:
                 inicio, fin = match.span()
                 antes = linea[:inicio]
-                monto = match.group(1)
+                monto = match.group(1).strip()
                 despues = linea[fin:]
 
+                pdf.set_font("Arial", "", 11)
                 pdf.write(5, antes)
+
                 pdf.set_font("Arial", "B", 11)
-                pdf.write(5, monto)
+                pdf.write(5, monto + " ")
+
                 pdf.set_font("Arial", "", 11)
                 pdf.write(5, despues + "\n")
             else:
