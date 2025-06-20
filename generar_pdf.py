@@ -21,7 +21,7 @@ def crear_pdf(texto):
     pdf.set_auto_page_break(auto=True, margin=15)
 
     # Título centrado
-    pdf.set_font("Arial", "B", 28)
+    pdf.set_font("Arial", "B", 22)
     pdf.cell(0, 15, titulo, ln=True, align="C")
 
     # Fecha alineada a la derecha
