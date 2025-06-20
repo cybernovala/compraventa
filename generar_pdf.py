@@ -21,27 +21,27 @@ def crear_pdf(texto):
     pdf.set_auto_page_break(auto=True, margin=15)
 
     # Título centrado, negrita, grande
-    pdf.set_font("Arial", "B", 28)
+    pdf.set_font("Arial", "B", 22)
     pdf.cell(0, 15, titulo, ln=True, align="C")
 
     # Fecha alineada a la derecha
-    pdf.set_font("Arial", "", 14)
+    pdf.set_font("Arial", "", 12)
     pdf.cell(0, 10, fecha, ln=True, align="R")
     pdf.ln(5)
 
     # Cuerpo del contrato
-    pdf.set_font("Arial", "", 14)
+    pdf.set_font("Arial", "", 12)
     pdf.multi_cell(0, 10, cuerpo, align="J")
 
     # Espacio antes de firmas
     pdf.ln(25)
 
     # Firmas centradas
-    pdf.set_font("Arial", "", 14)
+    pdf.set_font("Arial", "", 12)
     pdf.cell(0, 10, firma_vendedor, ln=True, align="C")
     pdf.cell(0, 10, rut_vendedor, ln=True, align="C")
 
-    pdf.ln(20)
+    pdf.ln(15)
 
     pdf.cell(0, 10, firma_comprador, ln=True, align="C")
     pdf.cell(0, 10, rut_comprador, ln=True, align="C")
