@@ -4,16 +4,21 @@ import io
 
 def crear_pdf(texto):
     # Separar líneas del texto completo
-    lineas = texto.strip().split("\n")
+    lineas = [line.strip() for line in texto.strip().split("\n") if line.strip()]
+
+    # Validar longitud mínima
+    if len(lineas) < 6:
+        raise ValueError("El texto no contiene suficientes líneas para generar el contrato.")
 
     # Extraer secciones
     titulo = "CONTRATO DE COMPRAVENTA DE VEHÍCULO"
-    fecha = lineas[1].strip() if len(lineas) > 1 else ""
+    fecha = lineas[1]
     cuerpo = "\n".join(lineas[2:-4]).strip()
-    firma_vendedor = lineas[-4].strip()
-    rut_vendedor = lineas[-3].strip()
-    firma_comprador = lineas[-2].strip()
-    rut_comprador = lineas[-1].strip()
+
+    firma_vendedor = lineas[-4]
+    rut_vendedor = lineas[-3]
+    firma_comprador = lineas[-2]
+    rut_comprador = lineas[-1]
 
     # Crear PDF
     pdf = FPDF()
@@ -29,28 +34,28 @@ def crear_pdf(texto):
     pdf.cell(0, 10, fecha, ln=True, align="R")
     pdf.ln(5)
 
-    # Cuerpo del contrato justificado
+    # Cuerpo del contrato
     pdf.set_font("Arial", "", 12)
     pdf.multi_cell(0, 10, cuerpo, align="J")
 
     # Espacio antes de firmas
     pdf.ln(20)
 
-    # Pie de firma del VENDEDOR (alineado y compacto)
+    # Pie de firma del vendedor
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 8, "_____________________________", ln=True, align="C")
-    pdf.cell(0, 6, firma_vendedor, ln=True, align="C")
-    pdf.cell(0, 6, f"RUT: {rut_vendedor}", ln=True, align="C")
+    pdf.cell(0, 7, firma_vendedor, ln=True, align="C")
+    pdf.cell(0, 7, f"RUT: {rut_vendedor}", ln=True, align="C")
 
     # Espacio entre firmas
-    pdf.ln(15)
+    pdf.ln(20)
 
-    # Pie de firma del COMPRADOR (alineado y compacto)
+    # Pie de firma del comprador
     pdf.cell(0, 8, "_____________________________", ln=True, align="C")
-    pdf.cell(0, 6, firma_comprador, ln=True, align="C")
-    pdf.cell(0, 6, f"RUT: {rut_comprador}", ln=True, align="C")
+    pdf.cell(0, 7, firma_comprador, ln=True, align="C")
+    pdf.cell(0, 7, f"RUT: {rut_comprador}", ln=True, align="C")
 
-    # Exportar el PDF a bytes
+    # Exportar PDF como bytes
     pdf_bytes = pdf.output(dest="S").encode("latin1")
 
     # Encriptar PDF
