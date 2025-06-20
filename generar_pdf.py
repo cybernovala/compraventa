@@ -9,7 +9,7 @@ def crear_pdf(texto):
     # Extraer secciones
     titulo = "CONTRATO DE COMPRAVENTA DE VEHÍCULO"
     fecha = lineas[1].strip() if len(lineas) > 1 else ""
-    cuerpo = "\n".join(lineas[2:-6]).strip()
+    cuerpo = "\n".join(lineas[2:-4]).strip()
     firma_vendedor = lineas[-4].strip()
     rut_vendedor = lineas[-3].strip()
     firma_comprador = lineas[-2].strip()
@@ -21,7 +21,7 @@ def crear_pdf(texto):
     pdf.set_auto_page_break(auto=True, margin=15)
 
     # Título centrado, negrita, grande
-    pdf.set_font("Arial", "B", 22)
+    pdf.set_font("Arial", "B", 22)  # puedes usar 28 si deseas más grande
     pdf.cell(0, 15, titulo, ln=True, align="C")
 
     # Fecha alineada a la derecha
@@ -29,24 +29,29 @@ def crear_pdf(texto):
     pdf.cell(0, 10, fecha, ln=True, align="R")
     pdf.ln(5)
 
-    # Cuerpo del contrato
+    # Cuerpo del contrato justificado
     pdf.set_font("Arial", "", 12)
     pdf.multi_cell(0, 10, cuerpo, align="J")
 
-    # Espacio antes de firmas
+    # Espacio antes de las firmas
     pdf.ln(25)
 
-    # Firmas centradas
+    # Firmas centradas con línea visual
     pdf.set_font("Arial", "", 12)
+
+    # Firma del vendedor
+    pdf.cell(0, 10, "_____________________________", ln=True, align="C")
     pdf.cell(0, 10, firma_vendedor, ln=True, align="C")
     pdf.cell(0, 10, rut_vendedor, ln=True, align="C")
 
-    pdf.ln(15)
+    pdf.ln(20)
 
+    # Firma del comprador
+    pdf.cell(0, 10, "_____________________________", ln=True, align="C")
     pdf.cell(0, 10, firma_comprador, ln=True, align="C")
     pdf.cell(0, 10, rut_comprador, ln=True, align="C")
 
-    # Exportar PDF como bytes
+    # Exportar el PDF a bytes
     pdf_bytes = pdf.output(dest="S").encode("latin1")
 
     # Encriptar PDF
