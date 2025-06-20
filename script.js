@@ -159,6 +159,6 @@ COMPRADOR: ${document.getElementById("nombre_comprador").value}
   const pdfBlob = await response.blob();
   const link = document.createElement("a");
   link.href = URL.createObjectURL(pdfBlob);
-  link.download = "contrato_compraventa.pdf";
+  link.download = "contrato_compraventa_cybernova.pdf";
   link.click();
 }
