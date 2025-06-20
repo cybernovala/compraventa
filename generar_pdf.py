@@ -14,7 +14,7 @@ def crear_pdf(texto):
     pdf.set_auto_page_break(auto=True, margin=15)
 
     # Título centrado, negrita, tamaño 28
-    pdf.set_font("Arial", "B", 28)
+    pdf.set_font("Arial", "B", 20)
     pdf.cell(0, 15, titulo, ln=True, align="C")
 
     # Fecha alineada a la derecha
@@ -23,6 +23,7 @@ def crear_pdf(texto):
     pdf.ln(5)
 
     # Cuerpo del contrato, justificado
+    lineas = texto.strip().split("\n", 2)
     pdf.set_font("Arial", "", 14)
     pdf.multi_cell(0, 10, cuerpo, align="J")
 
