@@ -34,26 +34,36 @@ def crear_pdf(texto):
     pdf.cell(0, 10, fecha, ln=True, align="R")
     pdf.ln(5)
 
-    # Cuerpo del contrato
+    # Cuerpo del contrato justificado
     pdf.set_font("Arial", "", 12)
     pdf.multi_cell(0, 10, cuerpo, align="J")
 
     # Espacio antes de firmas
-    pdf.ln(20)
+    pdf.ln(30)
 
-    # Pie de firma del vendedor
-    pdf.set_font("Arial", "", 12)
-    pdf.cell(0, 8, "_____________________________", ln=True, align="C")
-    pdf.cell(0, 7, firma_vendedor, ln=True, align="C")
-    pdf.cell(0, 7, f"RUT: {rut_vendedor}", ln=True, align="C")
+    # Pie de firma: en columnas alineadas
+    page_width = pdf.w - 2 * pdf.l_margin
+    col_width = page_width / 2
+    y = pdf.get_y()
 
-    # Espacio entre firmas
-    pdf.ln(20)
+    # Línea
+    pdf.set_y(y)
+    pdf.set_x(pdf.l_margin)
+    pdf.cell(col_width, 8, "_____________________________", 0, 0, "C")
+    pdf.set_x(pdf.l_margin + col_width)
+    pdf.cell(col_width, 8, "_____________________________", 0, 1, "C")
 
-    # Pie de firma del comprador
-    pdf.cell(0, 8, "_____________________________", ln=True, align="C")
-    pdf.cell(0, 7, firma_comprador, ln=True, align="C")
-    pdf.cell(0, 7, f"RUT: {rut_comprador}", ln=True, align="C")
+    # Nombres
+    pdf.set_x(pdf.l_margin)
+    pdf.cell(col_width, 7, firma_vendedor, 0, 0, "C")
+    pdf.set_x(pdf.l_margin + col_width)
+    pdf.cell(col_width, 7, firma_comprador, 0, 1, "C")
+
+    # RUTs
+    pdf.set_x(pdf.l_margin)
+    pdf.cell(col_width, 7, f"RUT: {rut_vendedor}", 0, 0, "C")
+    pdf.set_x(pdf.l_margin + col_width)
+    pdf.cell(col_width, 7, f"RUT: {rut_comprador}", 0, 1, "C")
 
     # Exportar PDF como bytes
     pdf_bytes = pdf.output(dest="S").encode("latin1")
