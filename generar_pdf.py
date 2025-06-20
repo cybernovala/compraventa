@@ -1,7 +1,6 @@
 from fpdf import FPDF
 from PyPDF2 import PdfReader, PdfWriter
 import io
-import re
 
 def crear_pdf(texto):
     # Separar líneas del texto completo
@@ -35,19 +34,17 @@ def crear_pdf(texto):
     pdf.ln(5)
 
     # Cuerpo del contrato justificado (tamaño 11)
+    clausula_3_detectada = False
     for linea in cuerpo_lineas:
-        if ':' in linea:
-            partes = linea.split(':', 1)
-            campo = partes[0].strip()
-            valor = partes[1].strip()
+        if not clausula_3_detectada and 'TERCERA' in linea.upper():
+            clausula_3_detectada = True
 
-            # Escribir campo normal
+        if not clausula_3_detectada and ':' in linea:
+            parte1, parte2 = linea.split(':', 1)
             pdf.set_font("Arial", "", 11)
-            pdf.write(5, f"{campo}: ")
-
-            # Escribir valor en negrita
+            pdf.write(5, f"{parte1}: ")
             pdf.set_font("Arial", "B", 11)
-            pdf.write(5, f"{valor}\n")
+            pdf.write(5, f"{parte2.strip()}\n")
         else:
             pdf.set_font("Arial", "", 11)
             pdf.multi_cell(0, 9, linea, align="J")
@@ -67,14 +64,14 @@ def crear_pdf(texto):
     pdf.set_x(pdf.l_margin + col_width)
     pdf.cell(col_width, 8, "_____________________________", 0, 1, "C")
 
-    # Nombres (solo los datos ingresados en negrita)
+    # Nombres (tamaño 11)
     pdf.set_font("Arial", "B", 11)
     pdf.set_x(pdf.l_margin)
     pdf.cell(col_width, 7, firma_vendedor, 0, 0, "C")
     pdf.set_x(pdf.l_margin + col_width)
     pdf.cell(col_width, 7, firma_comprador, 0, 1, "C")
 
-    # RUTs (solo valores en negrita)
+    # RUTs (tamaño 11)
     pdf.set_x(pdf.l_margin)
     pdf.cell(col_width, 7, f"RUT: {rut_vendedor}", 0, 0, "C")
     pdf.set_x(pdf.l_margin + col_width)
