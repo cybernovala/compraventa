@@ -46,9 +46,7 @@ def crear_pdf(texto):
             "OCTAVA:",
             "NOVENA:",
             "DÉCIMA:",
-            # Agrega más si es necesario
         ]
-        # Si la línea es inicio de cláusula, agregar espacio antes
         if any(texto_mayus.startswith(clausula) for clausula in clausulas_iniciales):
             pdf.ln(5)
 
@@ -83,26 +81,21 @@ def crear_pdf(texto):
             pdf.multi_cell(0, 9, linea, align="J")
             continue
 
-        # PRECIO Y FORMA DE PAGO → no en negrita, solo el monto
-        if "PRECIO Y FORMA DE PAGO" in texto_mayus and '$' in linea:
-            inicio = linea.find('$')
-            if inicio != -1:
-                antes = linea[:inicio]
-                monto_y_despues = linea[inicio:]
-                partes = monto_y_despues.split(" ", 1)
-                monto = partes[0]
-                resto = partes[1] if len(partes) > 1 else ""
+        # PRECIO Y FORMA DE PAGO → no en negrita, solo monto con $ en negrita
+        if "PRECIO Y FORMA DE PAGO" in texto_mayus and "$" in linea:
+            pdf.set_font("Arial", "", 11)
 
-                # Frase completa sin negrita, solo monto en negrita
-                pdf.set_font("Arial", "", 11)
-                pdf.write(5, antes)
-
-                pdf.set_font("Arial", "B", 11)
-                pdf.write(5, monto + " ")
-
-                pdf.set_font("Arial", "", 11)
-                pdf.write(5, resto + "\n")
-                continue
+            # Dividir la línea en partes para aislar el monto con $
+            partes = linea.split()
+            for palabra in partes:
+                if palabra.startswith('$'):
+                    pdf.set_font("Arial", "B", 11)
+                    pdf.write(5, palabra + " ")
+                    pdf.set_font("Arial", "", 11)
+                else:
+                    pdf.write(5, palabra + " ")
+            pdf.write(5, "\n")
+            continue
 
         # Negrita para datos antes de cláusula 3, excluyendo "PRECIO Y FORMA DE PAGO"
         if (not clausula_3_detectada and ':' in linea and 
