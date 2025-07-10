@@ -1,3 +1,4 @@
+import io
 from fpdf import FPDF
 from PyPDF2 import PdfReader, PdfWriter
 
