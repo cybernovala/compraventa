@@ -73,7 +73,7 @@ def generar_pdf_compraventa(data, admin=False):
 
     # Marca de agua
     if not admin:
-        pdf.watermark("--------------------")
+        pdf.watermark("NOVANOVA")
 
     pdf_output = pdf.output(dest="S").encode("latin1")
     return pdf_output
