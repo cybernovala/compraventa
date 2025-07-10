@@ -5,7 +5,7 @@ CONTRATO DE COMPRAVENTA DE VEHÍCULO
 
 ${datos.fecha.toUpperCase()}
 
-Comparecen:
+COMPARECEN:
 
 1. Vendedor:
 Nombre: ${datos.nombre_vendedor}
@@ -19,36 +19,22 @@ RUT: ${datos.rut_comprador}
 Domicilio: ${datos.domicilio_comprador}
 Teléfono: ${datos.telefono_comprador}
 
-Ambas partes acuerdan celebrar el presente contrato de compraventa de vehículo, de acuerdo a las siguientes cláusulas:
+Ambas partes acuerdan celebrar el presente contrato, bajo las siguientes cláusulas:
 
 PRIMERA: Objeto del contrato
-El vendedor se compromete a vender al comprador, quien compra en este acto, el vehículo de características siguientes:
-
 Marca: ${datos.marca}
 Modelo: ${datos.modelo}
-Año de fabricación: ${datos.anio}
-Número de serie (VIN): ${datos.vin}
+Año: ${datos.anio}
+VIN: ${datos.vin}
 Patente: ${datos.patente}
 Color: ${datos.color}
 Otros: ${datos.otros}
 
 SEGUNDA: Precio y forma de pago
-El precio total de la compraventa es de ${datos.monto}, que el comprador pagará al vendedor de la siguiente forma:
-${datos.forma_pago}
+Monto: ${datos.monto}
+Forma de pago: ${datos.forma_pago}
 
-TERCERA: Entrega del vehículo
-El vendedor se compromete a entregar el vehículo al comprador en el estado que se encuentra.
-
-CUARTA: Declaraciones del vendedor
-El vendedor declara que:
-- Es propietario del vehículo.
-- El vehículo no tiene gravámenes ni embargos.
-- Cuenta con documentos vigentes.
-
-${datos.nombre_vendedor}
-${datos.rut_vendedor}
-${datos.nombre_comprador}
-${datos.rut_comprador}
+(El resto de las cláusulas y firmas se completan en el PDF final.)
 `.toUpperCase();
 
   const preview = document.getElementById("preview");
@@ -86,7 +72,7 @@ CONTRATO DE COMPRAVENTA DE VEHÍCULO
 
 ${datos.fecha.toUpperCase()}
 
-Comparecen:
+COMPARECEN:
 
 1. Vendedor:
 Nombre: ${datos.nombre_vendedor}
@@ -100,31 +86,18 @@ RUT: ${datos.rut_comprador}
 Domicilio: ${datos.domicilio_comprador}
 Teléfono: ${datos.telefono_comprador}
 
-Ambas partes acuerdan celebrar el presente contrato de compraventa de vehículo, de acuerdo a las siguientes cláusulas:
-
-PRIMERA: Objeto del contrato
-El vendedor se compromete a vender al comprador, quien compra en este acto, el vehículo de características siguientes:
-
+PRIMERA: Objeto
 Marca: ${datos.marca}
 Modelo: ${datos.modelo}
-Año de fabricación: ${datos.anio}
-Número de serie (VIN): ${datos.vin}
+Año: ${datos.anio}
+VIN: ${datos.vin}
 Patente: ${datos.patente}
 Color: ${datos.color}
 Otros: ${datos.otros}
 
 SEGUNDA: Precio y forma de pago
-El precio total de la compraventa es de ${datos.monto}, que el comprador pagará al vendedor de la siguiente forma:
-${datos.forma_pago}
-
-TERCERA: Entrega del vehículo
-El vendedor se compromete a entregar el vehículo al comprador en el estado que se encuentra.
-
-CUARTA: Declaraciones del vendedor
-El vendedor declara que:
-- Es propietario del vehículo.
-- El vehículo no tiene gravámenes ni embargos.
-- Cuenta con documentos vigentes.
+Monto: ${datos.monto}
+Forma de pago: ${datos.forma_pago}
 
 ${datos.nombre_vendedor}
 ${datos.rut_vendedor}
@@ -132,12 +105,10 @@ ${datos.nombre_comprador}
 ${datos.rut_comprador}
 `.toUpperCase();
 
-  const blob = new Blob([JSON.stringify({ contenido: texto })], { type: "application/json" });
-
   const response = await fetch("https://compraventa-5lhy.onrender.com/generar_pdf", {
     method: "POST",
-    body: blob,
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contenido: texto })
   });
 
   const pdfBlob = await response.blob();
