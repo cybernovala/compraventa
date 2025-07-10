@@ -11,7 +11,6 @@ class PDF(FPDF):
         center_y = self.h / 2
 
         self.rotate(45, x=center_x, y=center_y)
-        # Ajustar un poco para centrar visualmente
         self.text(center_x - 80, center_y, text)
         self.rotate(0)
 
@@ -35,13 +34,17 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    # Fecha alineada derecha
+    # Título principal centrado y en negrita
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(0, 10, "CONTRATO DE COMPRAVENTA DE VEHÍCULO", ln=True, align="C")
+
+    # Fecha alineada a la izquierda
     fecha = data.get("fecha", "")
     pdf.set_font("Arial", "", 12)
-    pdf.cell(0, 10, fecha.upper(), ln=True, align="R")
+    pdf.cell(0, 10, fecha.upper(), ln=True, align="L")
     pdf.ln(5)
 
-    # Contenido completo ya contiene título
+    # Contenido
     contenido = data.get("contenido", "")
     pdf.set_font("Arial", "", 12)
     pdf.multi_cell(0, 7, contenido)
@@ -65,7 +68,7 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.cell(30, 7, "", ln=0)
     pdf.cell(80, 7, f"RUT: {rut_comprador}", ln=1, align="C")
 
-    # Marca de agua (solo si no es admin)
+    # Marca de agua
     if not admin:
         pdf.add_watermark("CYBERNOVA")
 
