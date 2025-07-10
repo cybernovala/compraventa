@@ -2,17 +2,20 @@ from fpdf import FPDF
 
 class PDF(FPDF):
     def add_watermark(self, text):
+        # Guardar estado gráfico
         self.set_text_color(200, 200, 200)
         self.set_font("Arial", "I", 50)
+        # Aplicar rotación
         self.rotate(45, x=self.w / 2, y=self.h / 2)
         self.text(self.w / 2 - 60, self.h / 2, text)
+        # Volver a estado normal
         self.rotate(0)
 
     def rotate(self, angle, x=None, y=None):
         if angle != 0:
             angle_rad = angle * 3.14159265 / 180
-            c = round(np.cos(angle_rad), 5)
-            s = round(np.sin(angle_rad), 5)
+            c = round(math.cos(angle_rad), 5)
+            s = round(math.sin(angle_rad), 5)
             if x is None:
                 x = self.x
             if y is None:
@@ -22,6 +25,8 @@ class PDF(FPDF):
             self._out(f'q {c:.5f} {s:.5f} {-s:.5f} {c:.5f} {cx:.5f} {cy:.5f} cm')
         else:
             self._out('Q')
+
+import math
 
 def generar_pdf_compraventa(data, admin=False):
     pdf = PDF()
