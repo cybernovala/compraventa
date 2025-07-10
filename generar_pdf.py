@@ -1,39 +1,30 @@
 from fpdf import FPDF
-from math import radians, cos, sin
 
 class PDF(FPDF):
-    def watermark(self, text):
+    def add_watermark(self, text):
         self.set_text_color(200, 200, 200)
         self.set_font("Arial", "I", 50)
         self.rotate(45, x=self.w / 2, y=self.h / 2)
-        self.text(x=self.w / 2 - 60, y=self.h / 2, txt=text)
+        self.text(self.w / 2 - 60, self.h / 2, text)
         self.rotate(0)
 
     def rotate(self, angle, x=None, y=None):
-        if self.angle != 0:
-            self._out('Q')
-        self.angle = angle
         if angle != 0:
-            x = x if x is not None else self.x
-            y = y if y is not None else self.y
-            angle_rad = radians(angle)
-            c = cos(angle_rad)
-            s = sin(angle_rad)
+            angle_rad = angle * 3.14159265 / 180
+            c = round(np.cos(angle_rad), 5)
+            s = round(np.sin(angle_rad), 5)
+            if x is None:
+                x = self.x
+            if y is None:
+                y = self.y
             cx = x * self.k
             cy = (self.h - y) * self.k
-            self._out(f'q {c:.5f} {s:.5f} {-s:.5f} {c:.5f} {cx - c * cx - s * cy:.5f} {cy - c * cy + s * cx:.5f} cm')
+            self._out(f'q {c:.5f} {s:.5f} {-s:.5f} {c:.5f} {cx:.5f} {cy:.5f} cm')
         else:
             self._out('Q')
 
-    def _endpage(self):
-        if self.angle != 0:
-            self.angle = 0
-            self._out('Q')
-        super()._endpage()
-
 def generar_pdf_compraventa(data, admin=False):
     pdf = PDF()
-    pdf.angle = 0
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
 
@@ -41,7 +32,7 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.set_font("Arial", "B", 18)
     pdf.cell(0, 10, "CONTRATO DE COMPRAVENTA DE VEHÍCULO", ln=True, align="C")
 
-    # Fecha alineada a la derecha
+    # Fecha alineada derecha
     fecha = data.get("fecha", "")
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 10, fecha.upper(), ln=True, align="R")
@@ -52,9 +43,9 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.set_font("Arial", "", 12)
     pdf.multi_cell(0, 7, contenido)
 
-    # Espacio para firmas
     pdf.ln(15)
 
+    # Líneas de firma
     pdf.cell(80, 10, "_" * 30, ln=0, align="C")
     pdf.cell(30, 10, "", ln=0)
     pdf.cell(80, 10, "_" * 30, ln=1, align="C")
@@ -71,9 +62,9 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.cell(30, 7, "", ln=0)
     pdf.cell(80, 7, f"RUT: {rut_comprador}", ln=1, align="C")
 
-    # Marca de agua
+    # Marca de agua (solo si no es admin)
     if not admin:
-        pdf.watermark("NOVANOVA")
+        pdf.add_watermark("CYBERNOVA")
 
     pdf_output = pdf.output(dest="S").encode("latin1")
     return pdf_output
