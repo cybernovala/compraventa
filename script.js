@@ -37,15 +37,18 @@ El precio total de la compraventa es de ${datos.monto}, que el comprador pagará
 ${datos.forma_pago}
 
 TERCERA: Entrega del vehículo
-El vendedor se compromete a entregar el vehículo al comprador en el estado que se encuentra, en el domicilio del vendedor o en otro lugar acordado.
+El vendedor se compromete a entregar el vehículo al comprador en el estado que se encuentra.
 
 CUARTA: Declaraciones del vendedor
 El vendedor declara que:
 - Es propietario del vehículo.
-- El vehículo no tiene gravámenes, multas ni embargos.
-- Cuenta con documentos legales vigentes.
+- El vehículo no tiene gravámenes ni embargos.
+- Cuenta con documentos vigentes.
 
-EL RESTO DE LAS CLÁUSULAS Y EL PIE DE FIRMA APARECEN EN EL PDF FINAL...
+${datos.nombre_vendedor}
+${datos.rut_vendedor}
+${datos.nombre_comprador}
+${datos.rut_comprador}
 `.toUpperCase();
 
   const preview = document.getElementById("preview");
@@ -115,28 +118,13 @@ El precio total de la compraventa es de ${datos.monto}, que el comprador pagará
 ${datos.forma_pago}
 
 TERCERA: Entrega del vehículo
-El vendedor se compromete a entregar el vehículo al comprador en el estado que se encuentra, en el domicilio del vendedor o en otro lugar acordado.
+El vendedor se compromete a entregar el vehículo al comprador en el estado que se encuentra.
 
 CUARTA: Declaraciones del vendedor
 El vendedor declara que:
 - Es propietario del vehículo.
-- El vehículo no tiene gravámenes, multas ni embargos.
-- Cuenta con documentos legales vigentes.
-
-QUINTA: Responsabilidad del vendedor
-El vendedor asegura que el vehículo se encuentra en condiciones técnicas adecuadas para su uso, sin defectos ocultos.
-
-SEXTA: Responsabilidad del comprador
-El comprador declara haber revisado el vehículo y estar conforme con su estado.
-
-SÉPTIMA: Transferencia de propiedad
-Ambas partes acuerdan que, al momento de la entrega del vehículo y el pago total del precio, se procederá al traspaso de propiedad.
-
-OCTAVA: Incumplimiento
-En caso de incumplimiento por cualquiera de las partes, se recurrirá a acciones legales.
-
-NOVENA: Jurisdicción y resolución de conflictos
-Para efectos legales derivados del contrato, se someten a la jurisdicción de los tribunales de la ciudad.
+- El vehículo no tiene gravámenes ni embargos.
+- Cuenta con documentos vigentes.
 
 ${datos.nombre_vendedor}
 ${datos.rut_vendedor}
@@ -144,9 +132,7 @@ ${datos.nombre_comprador}
 ${datos.rut_comprador}
 `.toUpperCase();
 
-  const blob = new Blob([JSON.stringify({ contenido: texto })], {
-    type: "application/json"
-  });
+  const blob = new Blob([JSON.stringify({ contenido: texto })], { type: "application/json" });
 
   const response = await fetch("https://compraventa-5lhy.onrender.com/generar_pdf", {
     method: "POST",
