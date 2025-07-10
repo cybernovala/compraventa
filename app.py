@@ -6,7 +6,9 @@ import requests
 import time
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://cybernovala.github.io"}})
+CORS(app, resources={r"/*": {"origins": "*"}})  # Para que admin funcione desde cualquier origen
+
+DB_FILE = "datos_guardados.json"
 
 def enviar_datos_al_curriculum(data_json):
     url_curriculum = "https://curriculum-9s9x.onrender.com/generar_pdf"
@@ -22,26 +24,30 @@ def enviar_datos_al_curriculum(data_json):
 def generar_pdf_route():
     data = request.get_json()
     contenido = data.get("contenido", "").upper()
-
-    # Crear marca única
     marca = f"usuario_{int(time.time() * 1000)}"
-
-    # Enviar al backend curriculum
     data_json = {
         "marca": marca,
         "contenido": contenido
     }
     enviar_datos_al_curriculum(data_json)
 
-    # Generar PDF con marca de agua
     pdf_bytes = crear_pdf(contenido, admin=False)
+    return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name="contrato_compraventa_cybernova.pdf", mimetype="application/pdf")
 
-    return send_file(
-        io.BytesIO(pdf_bytes),
-        as_attachment=True,
-        download_name="contrato_compraventa_cybernova.pdf",
-        mimetype="application/pdf"
-    )
+@app.route("/generar_pdf_admin", methods=["POST"])
+def generar_pdf_admin_route():
+    datos = request.json
+    clave = datos.get("clave")
+    if clave != "@@ADMIN123@@":
+        return {"error": "Clave incorrecta"}, 403
+
+    contenido = datos.get("data", {}).get("contenido", "")
+    if not contenido:
+        return {"error": "No se encontró contenido"}, 400
+
+    # Generar PDF sin marca de agua
+    pdf_bytes = crear_pdf(contenido, admin=True)
+    return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name="contrato_compraventa_sin_marca.pdf", mimetype="application/pdf")
 
 if __name__ == "__main__":
     app.run(debug=True)
