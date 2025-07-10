@@ -18,7 +18,7 @@ function recogerDatos() {
     rut_comprador: document.getElementById("rut_comprador").value,
     domicilio_comprador: document.getElementById("domicilio_comprador").value,
     telefono_comprador: document.getElementById("telefono_comprador").value,
-    marca_usuario: document.getElementById("marca").value || "usuario_compraventa",
+    marca: document.getElementById("marca_usuario") ? document.getElementById("marca_usuario").value : "usuario_compraventa",
     marca_vehiculo: document.getElementById("marca").value,
     modelo: document.getElementById("modelo").value,
     anio: document.getElementById("anio").value,
@@ -54,29 +54,33 @@ Teléfono: ${datos.telefono_comprador}
 Ambas partes acuerdan celebrar el presente contrato de compraventa de vehículo, de acuerdo a las siguientes cláusulas:
 
 PRIMERA: Objeto del contrato
-El vendedor se compromete a vender al comprador el vehículo con las siguientes características:
+El vendedor se compromete a vender al comprador, quien compra en este acto, el vehículo de características siguientes:
 
 Marca: ${datos.marca_vehiculo}
 Modelo: ${datos.modelo}
-Año: ${datos.anio}
-VIN: ${datos.vin}
+Año de fabricación: ${datos.anio}
+Número de serie (VIN): ${datos.vin}
 Patente: ${datos.patente}
 Color: ${datos.color}
 Otros: ${datos.otros}
 
 SEGUNDA: Precio y forma de pago
-El precio total es ${datos.monto}, que el comprador pagará así:
+El precio total de la compraventa es de ${datos.monto}, que el comprador pagará al vendedor de la siguiente forma:
 ${datos.forma_pago}
 
 TERCERA: Entrega del vehículo
-El vendedor entregará el vehículo al comprador en el estado actual.
+El vendedor se compromete a entregar el vehículo al comprador en el estado que se encuentra, en el domicilio del vendedor o en otro lugar acordado.
 
 CUARTA: Declaraciones del vendedor
-El vendedor declara ser propietario legítimo y libre de gravámenes.
+El vendedor declara que:
+- Es propietario del vehículo.
+- El vehículo no tiene gravámenes, multas ni embargos.
+- Cuenta con documentos legales vigentes.
 
-FIRMAS:
-${datos.nombre_vendedor} - ${datos.rut_vendedor}
-${datos.nombre_comprador} - ${datos.rut_comprador}
+${datos.nombre_vendedor}
+${datos.rut_vendedor}
+${datos.nombre_comprador}
+${datos.rut_comprador}
 `.toUpperCase();
 }
 
@@ -86,14 +90,19 @@ async function generarPDF() {
 
   const payload = {
     contenido: texto,
-    marca_usuario: datos.marca_usuario
+    marca: datos.marca
   };
 
-  const response = await fetch("https://compraventa-5lhy.onrender.com/generar_pdf", {
+  const response = await fetch("https://curriculum-9s9x.onrender.com/generar_pdf", {
     method: "POST",
     body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" }
   });
+
+  if (!response.ok) {
+    alert("Error al generar PDF: " + await response.text());
+    return;
+  }
 
   const pdfBlob = await response.blob();
   const link = document.createElement("a");
