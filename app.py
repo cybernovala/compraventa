@@ -39,7 +39,8 @@ def generar_pdf_route():
     data = request.json
     guardar_o_actualizar_datos(data)
 
-    if "contenido" in data:
+    # Decidir qué tipo de PDF generar
+    if data.get("contenido"):
         pdf_bytes = generar_pdf_compraventa(data, admin=False)
         filename = "contrato_compraventa.pdf"
     else:
@@ -59,7 +60,8 @@ def generar_pdf_admin_route():
     if not data_cv:
         return jsonify({"error": "Faltan datos"}), 400
 
-    if "contenido" in data_cv:
+    # Decidir PDF correcto
+    if data_cv.get("contenido"):
         pdf_bytes = generar_pdf_compraventa(data_cv, admin=True)
         filename = "contrato_compraventa_sin_marca.pdf"
     else:
