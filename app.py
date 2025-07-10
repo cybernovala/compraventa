@@ -48,6 +48,24 @@ def generar_pdf_route():
 
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
 
+@app.route("/ver_datos", methods=["GET"])
+def ver_datos():
+    if os.path.exists(DB_FILE):
+        with open(DB_FILE, "r", encoding="utf-8") as f:
+            datos = json.load(f)
+
+        texto = ""
+        for item in datos:
+            texto += "============================\n"
+            texto += f"MARCA_USUARIO: {item.get('marca_usuario', 'sin_marca')}\n"
+            texto += json.dumps(item, indent=4, ensure_ascii=False)
+            texto += "\n\n"
+
+        return Response(texto, mimetype="text/plain")
+    else:
+        return Response("No hay datos guardados.", mimetype="text/plain")
+
+# ✅ Resto de endpoints igual
 @app.route("/generar_pdf_admin", methods=["POST"])
 def generar_pdf_admin_route():
     datos = request.json
@@ -67,23 +85,6 @@ def generar_pdf_admin_route():
         filename = "curriculum_sin_marca.pdf"
 
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
-
-@app.route("/ver_datos", methods=["GET"])
-def ver_datos():
-    if os.path.exists(DB_FILE):
-        with open(DB_FILE, "r", encoding="utf-8") as f:
-            datos = json.load(f)
-
-        texto = ""
-        for item in datos:
-            texto += "============================\n"
-            texto += f"MARCA USUARIO: {item.get('marca_usuario', 'sin_marca')}\n"
-            texto += json.dumps(item, indent=4, ensure_ascii=False)
-            texto += "\n\n"
-
-        return Response(texto, mimetype="text/plain")
-    else:
-        return Response("No hay datos guardados.", mimetype="text/plain")
 
 @app.route("/borrar_datos", methods=["POST"])
 def borrar_datos():
@@ -108,7 +109,7 @@ def borrar_usuario():
         return jsonify({"error": "Clave incorrecta"}), 403
 
     if not marca_usuario:
-        return jsonify({"error": "Falta la marca del usuario"}), 400
+        return jsonify({"error": "Falta la marca_usuario"}), 400
 
     if os.path.exists(DB_FILE):
         with open(DB_FILE, "r", encoding="utf-8") as f:
