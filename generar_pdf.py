@@ -1,6 +1,4 @@
-import io
 from fpdf import FPDF
-from PyPDF2 import PdfReader, PdfWriter
 
 def generar_pdf_curriculum(data, admin=False):
     pdf = FPDF()
