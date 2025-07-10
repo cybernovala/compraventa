@@ -3,16 +3,17 @@ from flask_cors import CORS
 import io
 import json
 import os
-from generar_pdf import generar_pdf_compraventa
+from generar_pdf import generar_pdf_curriculum, generar_pdf_compraventa
 
 app = Flask(__name__)
 CORS(app)
 
-DB_FILE = "datos_guardados.json"
+# Cambiado archivo JSON para compraventa exclusivamente
+DB_FILE = "datos_compraventa.json"
 
 def guardar_o_actualizar_datos(data):
-    marca_usuario = data.get("marca_usuario")
-    if not marca_usuario:
+    marca = data.get("marca")
+    if not marca:
         return
 
     if os.path.exists(DB_FILE):
@@ -23,7 +24,7 @@ def guardar_o_actualizar_datos(data):
 
     actualizado = False
     for i, item in enumerate(datos):
-        if item.get("marca_usuario") == marca_usuario:
+        if item.get("marca") == marca:
             datos[i] = data
             actualizado = True
             break
@@ -39,8 +40,32 @@ def generar_pdf_route():
     data = request.json
     guardar_o_actualizar_datos(data)
 
-    pdf_bytes = generar_pdf_compraventa(data, admin=False)
-    filename = "contrato_compraventa.pdf"
+    if data.get("contenido"):
+        pdf_bytes = generar_pdf_compraventa(data, admin=False)
+        filename = "contrato_compraventa.pdf"
+    else:
+        pdf_bytes = generar_pdf_curriculum(data, admin=False)
+        filename = "curriculum_cybernova.pdf"
+
+    return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
+
+@app.route("/generar_pdf_admin", methods=["POST"])
+def generar_pdf_admin_route():
+    datos = request.json
+    clave = datos.get("clave")
+    if clave != "@@ADMIN123@@":
+        return jsonify({"error": "Clave incorrecta"}), 403
+
+    data_cv = datos.get("data")
+    if not data_cv:
+        return jsonify({"error": "Faltan datos"}), 400
+
+    if data_cv.get("contenido"):
+        pdf_bytes = generar_pdf_compraventa(data_cv, admin=True)
+        filename = "contrato_compraventa_sin_marca.pdf"
+    else:
+        pdf_bytes = generar_pdf_curriculum(data_cv, admin=True)
+        filename = "curriculum_sin_marca.pdf"
 
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
 
@@ -53,7 +78,7 @@ def ver_datos():
         texto = ""
         for item in datos:
             texto += "============================\n"
-            texto += f"MARCA_USUARIO: {item.get('marca_usuario', 'sin_marca')}\n"
+            texto += f"MARCA: {item.get('marca', 'sin_marca')}\n"
             texto += json.dumps(item, indent=4, ensure_ascii=False)
             texto += "\n\n"
 
@@ -78,24 +103,24 @@ def borrar_datos():
 def borrar_usuario():
     datos = request.json
     clave = datos.get("clave")
-    marca_usuario = datos.get("marca_usuario")
+    marca = datos.get("marca")
 
     if clave != "@@ADMIN123@@":
         return jsonify({"error": "Clave incorrecta"}), 403
 
-    if not marca_usuario:
-        return jsonify({"error": "Falta la marca_usuario"}), 400
+    if not marca:
+        return jsonify({"error": "Falta la marca del usuario"}), 400
 
     if os.path.exists(DB_FILE):
         with open(DB_FILE, "r", encoding="utf-8") as f:
             lista_datos = json.load(f)
 
-        nueva_lista = [item for item in lista_datos if item.get("marca_usuario") != marca_usuario]
+        nueva_lista = [item for item in lista_datos if item.get("marca") != marca]
 
         with open(DB_FILE, "w", encoding="utf-8") as f:
             json.dump(nueva_lista, f, indent=4, ensure_ascii=False)
 
-        return jsonify({"mensaje": f"✅ Usuario con marca '{marca_usuario}' borrado correctamente."})
+        return jsonify({"mensaje": f"✅ Usuario con marca '{marca}' borrado correctamente."})
     else:
         return jsonify({"mensaje": "No hay datos guardados."})
 
