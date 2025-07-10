@@ -3,7 +3,7 @@ from flask_cors import CORS
 import io
 import json
 import os
-from generar_pdf import generar_pdf_curriculum, generar_pdf_compraventa
+from generar_pdf import generar_pdf_compraventa
 
 app = Flask(__name__)
 CORS(app)
@@ -39,12 +39,8 @@ def generar_pdf_route():
     data = request.json
     guardar_o_actualizar_datos(data)
 
-    if data.get("contenido"):
-        pdf_bytes = generar_pdf_compraventa(data, admin=False)
-        filename = "contrato_compraventa.pdf"
-    else:
-        pdf_bytes = generar_pdf_curriculum(data, admin=False)
-        filename = "curriculum_cybernova.pdf"
+    pdf_bytes = generar_pdf_compraventa(data, admin=False)
+    filename = "contrato_compraventa.pdf"
 
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
 
@@ -64,27 +60,6 @@ def ver_datos():
         return Response(texto, mimetype="text/plain")
     else:
         return Response("No hay datos guardados.", mimetype="text/plain")
-
-# ✅ Resto de endpoints igual
-@app.route("/generar_pdf_admin", methods=["POST"])
-def generar_pdf_admin_route():
-    datos = request.json
-    clave = datos.get("clave")
-    if clave != "@@ADMIN123@@":
-        return jsonify({"error": "Clave incorrecta"}), 403
-
-    data_cv = datos.get("data")
-    if not data_cv:
-        return jsonify({"error": "Faltan datos"}), 400
-
-    if data_cv.get("contenido"):
-        pdf_bytes = generar_pdf_compraventa(data_cv, admin=True)
-        filename = "contrato_compraventa_sin_marca.pdf"
-    else:
-        pdf_bytes = generar_pdf_curriculum(data_cv, admin=True)
-        filename = "curriculum_sin_marca.pdf"
-
-    return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
 
 @app.route("/borrar_datos", methods=["POST"])
 def borrar_datos():
