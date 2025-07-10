@@ -1,4 +1,5 @@
 from fpdf import FPDF
+from math import cos, sin, radians
 
 class PDF(FPDF):
     def header(self):
@@ -6,6 +7,22 @@ class PDF(FPDF):
 
     def footer(self):
         pass
+
+    def rotate(self, angle, x=None, y=None):
+        if x is None:
+            x = self.x
+        if y is None:
+            y = self.y
+        self._out(f'q {self._get_rotation_matrix(angle, x, y)} cm')
+
+    def _get_rotation_matrix(self, angle, x, y):
+        angle_rad = radians(angle)
+        c = cos(angle_rad)
+        s = sin(angle_rad)
+        return f"{c:.5f} {s:.5f} {-s:.5f} {c:.5f} {x:.2f} {y:.2f}"
+
+    def reset_rotation(self):
+        self._out("Q")
 
 def generar_pdf_compraventa(data, admin=False):
     pdf = PDF()
@@ -38,30 +55,13 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.cell(30, 8, "", ln=0)
     pdf.cell(80, 8, f"RUT: {data.get('rut_comprador', '')}", ln=1, align="C")
 
-    # Marca de agua si no es admin
+    # Marca de agua
     if not admin:
-        pdf.set_text_color(200, 200, 200)
+        pdf.set_text_color(220, 220, 220)
         pdf.set_font("Arial", "B", 50)
         pdf.rotate(45, x=pdf.w / 2, y=pdf.h / 2)
         pdf.text(x=pdf.w / 2 - 60, y=pdf.h / 2, txt="CYBERNOVA")
-        pdf.rotate(0)
+        pdf.reset_rotation()
 
     pdf_output = pdf.output(dest="S").encode("latin1")
     return pdf_output
-
-# Función para rotar texto
-def rotate(self, angle, x=None, y=None):
-    if x is None:
-        x = self.x
-    if y is None:
-        y = self.y
-    self._out(f'q {self._get_rotation_matrix(angle, x, y)} cm')
-
-def _get_rotation_matrix(self, angle, x, y):
-    angle_rad = angle * 3.14159265 / 180
-    c = round(cos(angle_rad), 5)
-    s = round(sin(angle_rad), 5)
-    return f"{c} {s} {-s} {c} {x} {y}"
-
-PDF.rotate = rotate
-PDF._get_rotation_matrix = _get_rotation_matrix
