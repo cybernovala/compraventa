@@ -11,8 +11,8 @@ CORS(app)
 DB_FILE = "datos_guardados.json"
 
 def guardar_o_actualizar_datos(data):
-    marca = data.get("marca")
-    if not marca:
+    marca_usuario = data.get("marca_usuario")
+    if not marca_usuario:
         return
 
     if os.path.exists(DB_FILE):
@@ -23,7 +23,7 @@ def guardar_o_actualizar_datos(data):
 
     actualizado = False
     for i, item in enumerate(datos):
-        if item.get("marca") == marca:
+        if item.get("marca_usuario") == marca_usuario:
             datos[i] = data
             actualizado = True
             break
@@ -39,7 +39,6 @@ def generar_pdf_route():
     data = request.json
     guardar_o_actualizar_datos(data)
 
-    # Decidir qué tipo de PDF generar
     if data.get("contenido"):
         pdf_bytes = generar_pdf_compraventa(data, admin=False)
         filename = "contrato_compraventa.pdf"
@@ -60,7 +59,6 @@ def generar_pdf_admin_route():
     if not data_cv:
         return jsonify({"error": "Faltan datos"}), 400
 
-    # Decidir PDF correcto
     if data_cv.get("contenido"):
         pdf_bytes = generar_pdf_compraventa(data_cv, admin=True)
         filename = "contrato_compraventa_sin_marca.pdf"
@@ -79,7 +77,7 @@ def ver_datos():
         texto = ""
         for item in datos:
             texto += "============================\n"
-            texto += f"MARCA: {item.get('marca', 'sin_marca')}\n"
+            texto += f"MARCA USUARIO: {item.get('marca_usuario', 'sin_marca')}\n"
             texto += json.dumps(item, indent=4, ensure_ascii=False)
             texto += "\n\n"
 
@@ -104,24 +102,24 @@ def borrar_datos():
 def borrar_usuario():
     datos = request.json
     clave = datos.get("clave")
-    marca = datos.get("marca")
+    marca_usuario = datos.get("marca_usuario")
 
     if clave != "@@ADMIN123@@":
         return jsonify({"error": "Clave incorrecta"}), 403
 
-    if not marca:
+    if not marca_usuario:
         return jsonify({"error": "Falta la marca del usuario"}), 400
 
     if os.path.exists(DB_FILE):
         with open(DB_FILE, "r", encoding="utf-8") as f:
             lista_datos = json.load(f)
 
-        nueva_lista = [item for item in lista_datos if item.get("marca") != marca]
+        nueva_lista = [item for item in lista_datos if item.get("marca_usuario") != marca_usuario]
 
         with open(DB_FILE, "w", encoding="utf-8") as f:
             json.dump(nueva_lista, f, indent=4, ensure_ascii=False)
 
-        return jsonify({"mensaje": f"✅ Usuario con marca '{marca}' borrado correctamente."})
+        return jsonify({"mensaje": f"✅ Usuario con marca '{marca_usuario}' borrado correctamente."})
     else:
         return jsonify({"mensaje": "No hay datos guardados."})
 
