@@ -18,7 +18,7 @@ function recogerDatos() {
     rut_comprador: document.getElementById("rut_comprador").value,
     domicilio_comprador: document.getElementById("domicilio_comprador").value,
     telefono_comprador: document.getElementById("telefono_comprador").value,
-    marca: document.getElementById("marca_usuario") ? document.getElementById("marca_usuario").value : "usuario_compraventa",
+    marca_usuario: "usuario_compraventa_" + Date.now(),
     marca_vehiculo: document.getElementById("marca").value,
     modelo: document.getElementById("modelo").value,
     anio: document.getElementById("anio").value,
@@ -90,10 +90,10 @@ async function generarPDF() {
 
   const payload = {
     contenido: texto,
-    marca: datos.marca
+    marca_usuario: datos.marca_usuario
   };
 
-  const response = await fetch("https://curriculum-9s9x.onrender.com/generar_pdf", {
+  const response = await fetch("https://compraventa-5lhy.onrender.com/generar_pdf", {
     method: "POST",
     body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" }
