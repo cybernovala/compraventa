@@ -18,7 +18,7 @@ function recogerDatos() {
     rut_comprador: document.getElementById("rut_comprador").value,
     domicilio_comprador: document.getElementById("domicilio_comprador").value,
     telefono_comprador: document.getElementById("telefono_comprador").value,
-    marca_usuario: document.getElementById("marca").value || "usuario_compraventa", // ⚡️ Aquí usamos marca_usuario
+    marca_usuario: document.getElementById("marca").value || "usuario_compraventa",
     marca_vehiculo: document.getElementById("marca").value,
     modelo: document.getElementById("modelo").value,
     anio: document.getElementById("anio").value,
@@ -54,7 +54,7 @@ Teléfono: ${datos.telefono_comprador}
 Ambas partes acuerdan celebrar el presente contrato de compraventa de vehículo, de acuerdo a las siguientes cláusulas:
 
 PRIMERA: Objeto del contrato
-El vendedor se compromete a vender al comprador, quien compra en este acto, el vehículo de características siguientes:
+El vendedor se compromete a vender al comprador el vehículo con las siguientes características:
 
 Marca: ${datos.marca_vehiculo}
 Modelo: ${datos.modelo}
@@ -69,10 +69,10 @@ El precio total es ${datos.monto}, que el comprador pagará así:
 ${datos.forma_pago}
 
 TERCERA: Entrega del vehículo
-El vendedor entregará el vehículo al comprador en el estado actual, en el domicilio del vendedor o el lugar acordado.
+El vendedor entregará el vehículo al comprador en el estado actual.
 
 CUARTA: Declaraciones del vendedor
-El vendedor declara ser propietario, libre de gravámenes, y con documentos al día.
+El vendedor declara ser propietario legítimo y libre de gravámenes.
 
 FIRMAS:
 ${datos.nombre_vendedor} - ${datos.rut_vendedor}
@@ -86,10 +86,10 @@ async function generarPDF() {
 
   const payload = {
     contenido: texto,
-    marca_usuario: datos.marca_usuario // ✅ importante!
+    marca_usuario: datos.marca_usuario
   };
 
-  const response = await fetch("https://curriculum-9s9x.onrender.com/generar_pdf", {
+  const response = await fetch("https://compraventa-5lhy.onrender.com/generar_pdf", {
     method: "POST",
     body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" }
