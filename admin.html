@@ -4,16 +4,17 @@
   <meta charset="UTF-8" />
   <title>Admin Compraventa - PDF sin marca</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
     textarea { width: 100%; height: 250px; }
     button { margin-top: 10px; padding: 10px 20px; font-size: 1rem; display: block; }
     input { margin-top: 10px; width: 100%; padding: 8px; }
+    pre { background: #eee; padding: 15px; overflow: auto; }
   </style>
 </head>
 <body>
   <h2>Admin Compraventa - PDF sin marca y gestión de datos</h2>
 
-  <p>⚠️ Pega aquí el bloque JSON del usuario (copiado desde <a href="https://curriculum-9s9x.onrender.com/ver_datos" target="_blank">/ver_datos</a>):</p>
+  <p>⚠️ Pega aquí el bloque JSON del usuario (copiado desde <a href="https://compraventa-5lhy.onrender.com/ver_datos" target="_blank">/ver_datos</a>):</p>
   <textarea id="datos"></textarea>
 
   <button onclick="generarPDF()">Generar y Descargar PDF sin marca</button>
@@ -21,16 +22,20 @@
   <hr>
 
   <h3>Eliminar usuario por marca</h3>
-  <input type="text" id="marcaEliminar" placeholder="Ej: usuario_123456789_001">
+  <input type="text" id="marcaEliminar" placeholder="Ej: usuario_compraventa">
   <button onclick="eliminarUsuario()">Eliminar usuario</button>
 
   <h3>Eliminar TODOS los datos</h3>
   <button onclick="eliminarTodos()">Eliminar todos los datos</button>
 
+  <h3>Ver datos guardados (refresca)</h3>
+  <button onclick="verDatos()">Mostrar datos</button>
+  <pre id="datosGuardados"></pre>
+
   <p id="mensaje"></p>
 
   <script>
-    const URL_BASE = "https://curriculum-9s9x.onrender.com";
+    const URL_BASE = "https://compraventa-5lhy.onrender.com";
 
     async function generarPDF() {
       const datosTexto = document.getElementById("datos").value.trim();
@@ -122,6 +127,16 @@
 
       } catch (error) {
         document.getElementById("mensaje").innerText = "❌ Error al borrar todos: " + error;
+      }
+    }
+
+    async function verDatos() {
+      try {
+        const response = await fetch(URL_BASE + "/ver_datos");
+        const texto = await response.text();
+        document.getElementById("datosGuardados").innerText = texto;
+      } catch (error) {
+        document.getElementById("datosGuardados").innerText = "❌ Error al obtener datos: " + error;
       }
     }
   </script>
