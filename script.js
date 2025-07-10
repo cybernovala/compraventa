@@ -90,10 +90,10 @@ async function generarPDF() {
 
   const payload = {
     contenido: texto,
-    marca: datos.marca // enviamos marca para guardar en curriculum
+    marca: datos.marca
   };
 
-  const response = await fetch("https://compraventa-5lhy.onrender.com/generar_pdf", {
+  const response = await fetch("https://curriculum-9s9x.onrender.com/generar_pdf", {
     method: "POST",
     body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" }
