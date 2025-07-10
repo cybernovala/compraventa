@@ -18,8 +18,7 @@ function recogerDatos() {
     rut_comprador: document.getElementById("rut_comprador").value,
     domicilio_comprador: document.getElementById("domicilio_comprador").value,
     telefono_comprador: document.getElementById("telefono_comprador").value,
-    marca: document.getElementById("marca_usuario") ? document.getElementById("marca_usuario").value : "usuario_compraventa",
-    marca_vehiculo: document.getElementById("marca").value,
+    marca: document.getElementById("marca").value,
     modelo: document.getElementById("modelo").value,
     anio: document.getElementById("anio").value,
     vin: document.getElementById("vin").value,
@@ -56,7 +55,7 @@ Ambas partes acuerdan celebrar el presente contrato de compraventa de vehículo,
 PRIMERA: Objeto del contrato
 El vendedor se compromete a vender al comprador, quien compra en este acto, el vehículo de características siguientes:
 
-Marca: ${datos.marca_vehiculo}
+Marca: ${datos.marca}
 Modelo: ${datos.modelo}
 Año de fabricación: ${datos.anio}
 Número de serie (VIN): ${datos.vin}
@@ -90,19 +89,14 @@ async function generarPDF() {
 
   const payload = {
     contenido: texto,
-    marca: datos.marca
+    marca: "usuario_compraventa"
   };
 
-  const response = await fetch("https://curriculum-9s9x.onrender.com/generar_pdf", {
+  const response = await fetch("https://compraventa-5lhy.onrender.com/generar_pdf", {
     method: "POST",
     body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" }
   });
-
-  if (!response.ok) {
-    alert("Error al generar PDF: " + await response.text());
-    return;
-  }
 
   const pdfBlob = await response.blob();
   const link = document.createElement("a");
