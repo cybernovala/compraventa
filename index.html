@@ -5,36 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contrato de Compraventa de Vehículo</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
-    h1 { text-align: center; }
-    label { font-weight: bold; }
-    input, textarea { width: 100%; padding: 12px; margin: 8px 0; box-sizing: border-box; font-size: 16px; }
-    .boton { background-color: #007bff; color: white; border: none; padding: 12px; font-size: 16px; width: 100%; margin-top: 10px; cursor: pointer; }
-    .boton:hover { background-color: #0056b3; }
-    .vista-previa { white-space: pre-wrap; background: #fff; padding: 15px; border: 1px solid #ccc; margin-top: 20px; font-size: 14px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    .boton {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .boton:hover {
+      background-color: #0056b3;
+    }
+
+    .vista-previa {
+      white-space: pre-wrap;
+      background: #fff;
+      padding: 15px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+      font-size: 14px;
+      display: none;
+    }
   </style>
 </head>
 <body>
+  <h1>Contrato de Compraventa de Vehículo</h1>
+
   <p style="color:blue; font-size: 0.9em;">
-    Valor: $3.500 por 2 copias.
-    El PDF generado contiene una marca de agua "CYBERNOVA" y se descarga en tu carpeta Descargas.
-    Posteriormente podrás solicitar una versión limpia solo para impresión en Cybernova.
-  </p>
-  <p style="color:blue; font-size: 0.9em;">
-    -INGRESE SUS DATOS EN EL FORMULARIO DE COMPRAVENTA DE VEHÍCULO...
-  </p>
-  <p style="color:red; font-size: 0.9em;">
-    Revise bien la vista previa antes de generar el PDF.
+    Valor: $3.500 por 2 copias. El archivo generado incluye marca de agua.  
+    Descargue desde su carpeta Descargas: <strong>contrato_compraventa_cybernova.pdf</strong>.  
   </p>
 
   <form id="formulario">
-    <!-- Campos tal cual ya los tienes... -->
-    <!-- ... -->
+    <label>Fecha:</label>
+    <input type="text" id="fecha" value="En Los Ángeles a 01 de enero de 2025">
+
+    <h3>Vendedor:</h3>
+    <input type="text" id="nombre_vendedor" placeholder="Nombre completo del vendedor">
+    <input type="text" id="rut_vendedor" placeholder="RUT del vendedor">
+    <input type="text" id="domicilio_vendedor" placeholder="Domicilio del vendedor">
+    <input type="text" id="telefono_vendedor" placeholder="Teléfono del vendedor">
+
+    <h3>Comprador:</h3>
+    <input type="text" id="nombre_comprador" placeholder="Nombre completo del comprador">
+    <input type="text" id="rut_comprador" placeholder="RUT del comprador">
+    <input type="text" id="domicilio_comprador" placeholder="Domicilio del comprador">
+    <input type="text" id="telefono_comprador" placeholder="Teléfono del comprador">
+
+    <h3>Datos del vehículo:</h3>
+    <input type="text" id="marca" placeholder="Marca del vehículo">
+    <input type="text" id="modelo" placeholder="Modelo del vehículo">
+    <input type="text" id="anio" placeholder="Año">
+    <input type="text" id="vin" placeholder="Número de serie (VIN)">
+    <input type="text" id="patente" placeholder="Patente">
+    <input type="text" id="color" placeholder="Color">
+    <input type="text" id="otros" placeholder="Otros detalles">
+
+    <h3>Monto:</h3>
+    <input type="text" id="monto" placeholder="Monto total (ej: $1.000.000)">
+    <textarea id="forma_pago" placeholder="Forma de pago"></textarea>
+
     <button type="button" class="boton" onclick="vistaPrevia()">Vista Previa</button>
     <button type="button" class="boton" onclick="generarPDF()">Generar PDF</button>
   </form>
 
-  <div class="vista-previa" id="preview" contenteditable="true" style="display:none;"></div>
+  <div class="vista-previa" id="preview" contenteditable="true"></div>
 
   <script src="script.js"></script>
 </body>
