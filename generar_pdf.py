@@ -22,16 +22,7 @@ def generar_pdf_curriculum(data, admin=False):
         pdf.cell(0, 10, "CYBERNOVA", align="C")
 
     pdf_output = pdf.output(dest="S").encode("latin1")
-    if not admin:
-        reader = PdfReader(io.BytesIO(pdf_output))
-        writer = PdfWriter()
-        writer.append_pages_from_reader(reader)
-        writer.encrypt("@@1234@@")
-        output = io.BytesIO()
-        writer.write(output)
-        return output.getvalue()
-    else:
-        return pdf_output
+    return pdf_output
 
 def generar_pdf_compraventa(data, admin=False):
     pdf = FPDF()
@@ -51,13 +42,4 @@ def generar_pdf_compraventa(data, admin=False):
         pdf.cell(0, 10, "CYBERNOVA", align="C")
 
     pdf_output = pdf.output(dest="S").encode("latin1")
-    if not admin:
-        reader = PdfReader(io.BytesIO(pdf_output))
-        writer = PdfWriter()
-        writer.append_pages_from_reader(reader)
-        writer.encrypt("@@1234@@")
-        output = io.BytesIO()
-        writer.write(output)
-        return output.getvalue()
-    else:
-        return pdf_output
+    return pdf_output
