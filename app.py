@@ -22,7 +22,6 @@ def guardar_o_actualizar_datos(data):
         datos = []
 
     actualizado = False
-
     for i, item in enumerate(datos):
         if item.get("marca") == marca:
             datos[i] = data
@@ -40,12 +39,12 @@ def generar_pdf_route():
     data = request.json
     guardar_o_actualizar_datos(data)
 
-    if "nombre" in data:
-        pdf_bytes = generar_pdf_curriculum(data, admin=False)
-        filename = "curriculum_cybernova.pdf"
-    else:
+    if "contenido" in data:
         pdf_bytes = generar_pdf_compraventa(data, admin=False)
         filename = "contrato_compraventa.pdf"
+    else:
+        pdf_bytes = generar_pdf_curriculum(data, admin=False)
+        filename = "curriculum_cybernova.pdf"
 
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
 
@@ -60,12 +59,12 @@ def generar_pdf_admin_route():
     if not data_cv:
         return jsonify({"error": "Faltan datos"}), 400
 
-    if "nombre" in data_cv:
-        pdf_bytes = generar_pdf_curriculum(data_cv, admin=True)
-        filename = "curriculum_sin_marca.pdf"
-    else:
+    if "contenido" in data_cv:
         pdf_bytes = generar_pdf_compraventa(data_cv, admin=True)
         filename = "contrato_compraventa_sin_marca.pdf"
+    else:
+        pdf_bytes = generar_pdf_curriculum(data_cv, admin=True)
+        filename = "curriculum_sin_marca.pdf"
 
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
 
