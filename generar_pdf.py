@@ -11,7 +11,8 @@ class PDF(FPDF):
         center_y = self.h / 2
 
         self.rotate(45, x=center_x, y=center_y)
-        self.text(center_x - 140, center_y, text)
+        # Ajustar un poco para centrar visualmente
+        self.text(center_x - 80, center_y, text)
         self.rotate(0)
 
     def rotate(self, angle, x=None, y=None):
@@ -34,24 +35,20 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    # Título
-    pdf.set_font("Arial", "B", 18)
-    pdf.cell(0, 10, "CONTRATO DE COMPRAVENTA DE VEHÍCULO", ln=True, align="C")
-
     # Fecha alineada derecha
     fecha = data.get("fecha", "")
     pdf.set_font("Arial", "", 12)
     pdf.cell(0, 10, fecha.upper(), ln=True, align="R")
     pdf.ln(5)
 
-    # Contenido
+    # Contenido completo ya contiene título
     contenido = data.get("contenido", "")
     pdf.set_font("Arial", "", 12)
     pdf.multi_cell(0, 7, contenido)
 
     pdf.ln(15)
 
-    # Líneas de firma
+    # Líneas para firma
     pdf.cell(80, 10, "_" * 30, ln=0, align="C")
     pdf.cell(30, 10, "", ln=0)
     pdf.cell(80, 10, "_" * 30, ln=1, align="C")
