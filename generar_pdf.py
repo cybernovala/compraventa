@@ -11,7 +11,7 @@ class PDF(FPDF):
         center_y = self.h / 2
 
         self.rotate(45, x=center_x, y=center_y)
-        self.text(center_x - 80, center_y, text)
+        self.text(center_x - 140, center_y, text)
         self.rotate(0)
 
     def rotate(self, angle, x=None, y=None):
