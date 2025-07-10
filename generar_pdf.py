@@ -7,7 +7,7 @@ class PDF(FPDF):
         self.set_font("Arial", "I", 50)
         # Aplicar rotación
         self.rotate(45, x=self.w / 2, y=self.h / 2)
-        self.text(self.w / 2 - 60, self.h / 2, text)
+        self.text(self.w / 2 - 140, self.h / 2, text)
         # Volver a estado normal
         self.rotate(0)
 
