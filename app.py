@@ -3,12 +3,11 @@ from flask_cors import CORS
 import io
 import json
 import os
-from generar_pdf import generar_pdf_curriculum, generar_pdf_compraventa
+from generar_pdf import generar_pdf_compraventa
 
 app = Flask(__name__)
 CORS(app)
 
-# Cambiado archivo JSON para compraventa exclusivamente
 DB_FILE = "datos_compraventa.json"
 
 def guardar_o_actualizar_datos(data):
@@ -40,12 +39,8 @@ def generar_pdf_route():
     data = request.json
     guardar_o_actualizar_datos(data)
 
-    if data.get("contenido"):
-        pdf_bytes = generar_pdf_compraventa(data, admin=False)
-        filename = "contrato_compraventa.pdf"
-    else:
-        pdf_bytes = generar_pdf_curriculum(data, admin=False)
-        filename = "curriculum_cybernova.pdf"
+    pdf_bytes = generar_pdf_compraventa(data, admin=False)
+    filename = "contrato_compraventa_cybernova.pdf"
 
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
 
@@ -60,12 +55,8 @@ def generar_pdf_admin_route():
     if not data_cv:
         return jsonify({"error": "Faltan datos"}), 400
 
-    if data_cv.get("contenido"):
-        pdf_bytes = generar_pdf_compraventa(data_cv, admin=True)
-        filename = "contrato_compraventa_sin_marca.pdf"
-    else:
-        pdf_bytes = generar_pdf_curriculum(data_cv, admin=True)
-        filename = "curriculum_sin_marca.pdf"
+    pdf_bytes = generar_pdf_compraventa(data_cv, admin=True)
+    filename = "contrato_compraventa_sin_marca.pdf"
 
     return send_file(io.BytesIO(pdf_bytes), as_attachment=True, download_name=filename, mimetype="application/pdf")
 
