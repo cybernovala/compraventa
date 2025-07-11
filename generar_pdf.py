@@ -3,38 +3,46 @@ import math
 
 class PDF(FPDF):
     def add_watermark(self, text):
+        # Guardar posición original
+        saved_x = self.x
+        saved_y = self.y
+
         self.set_text_color(200, 200, 200)
         self.set_font("Arial", "I", 50)
+
+        center_x = self.w / 2
+        center_y = self.h / 2
+
+        # Calcular ángulo
+        angle = 45
+        angle_rad = math.radians(angle)
+        c = math.cos(angle_rad)
+        s = math.sin(angle_rad)
 
         # Guardar estado gráfico
         self._out("q")
 
-        center_x = self.w / 2
-        center_y = self.h / 2
-        angle = 45
-        angle_rad = angle * math.pi / 180
-        c = round(math.cos(angle_rad), 5)
-        s = round(math.sin(angle_rad), 5)
-        cx = center_x * self.k
-        cy = (self.h - center_y) * self.k
+        # Traslación al centro
+        self._out(f"1 0 0 1 {center_x * self.k} {(self.h - center_y) * self.k} cm")
+        # Rotación
+        self._out(f"{c:.5f} {s:.5f} {-s:.5f} {c:.5f} 0 0 cm")
+        # Traslación para centrar texto
+        self._out("1 0 0 1 -50 0 cm")  # Ajustar horizontal (puedes mover -50 si quieres afinar)
 
-        self._out(f"{c:.5f} {s:.5f} {-s:.5f} {c:.5f} {cx:.5f} {cy:.5f} cm")
+        # Dibujar texto
+        self.cell(100, 10, text, align="C")
 
-        # Centramos con set_xy y un ancho más grande para el texto
-        self.set_xy(-100, 0)
-        self.cell(200, 20, text, align="C")
-
+        # Restaurar estado gráfico
         self._out("Q")
+
+        # Restaurar posición original
+        self.set_xy(saved_x, saved_y)
 
 
 def generar_pdf_compraventa(data, admin=False):
     pdf = PDF()
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
-
-    # 💡 Colocar la marca de agua aquí, apenas se agrega la página
-    if not admin:
-        pdf.add_watermark("NOVANOVA")
 
     pdf.set_font("Arial", "B", 16)
     pdf.cell(0, 10, "CONTRATO DE COMPRAVENTA DE VEHÍCULO", ln=True, align="C")
@@ -122,6 +130,10 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.cell(80, 7, f"RUT: {data.get('rut_vendedor', '').upper()}", ln=0, align="C")
     pdf.cell(30, 7, "", ln=0)
     pdf.cell(80, 7, f"RUT: {data.get('rut_comprador', '').upper()}", ln=1, align="C")
+
+    # 💧 Colocar la marca de agua al final (o al principio si quieres)
+    if not admin:
+        pdf.add_watermark("CYBERNOVA")
 
     pdf_output = pdf.output(dest="S").encode("latin1")
     return pdf_output
