@@ -7,10 +7,14 @@ class PDF(FPDF):
         self.set_font("Arial", "I", 50)
         center_x = self.w / 2
         center_y = self.h / 2
-        self.rotate(45, x=center_x, y=center_y)
-        self.text(center_x - 45, center_y, text)
-        self.rotate(0)
 
+        self.rotate(45, x=center_x, y=center_y)
+
+        # Posicionar correctamente
+        self.set_xy(center_x - 100, center_y - 25)
+        self.cell(200, 50, text, align="C")
+
+        self.rotate(0)
 
     def rotate(self, angle, x=None, y=None):
         if angle != 0:
@@ -26,6 +30,7 @@ class PDF(FPDF):
             self._out(f'q {c:.5f} {s:.5f} {-s:.5f} {c:.5f} {cx:.5f} {cy:.5f} cm')
         else:
             self._out('Q')
+
 
 def generar_pdf_compraventa(data, admin=False):
     pdf = PDF()
