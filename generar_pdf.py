@@ -8,26 +8,24 @@ class PDF(FPDF):
         saved_y = self.y
 
         self.set_text_color(200, 200, 200)
-        self.set_font("Arial", "I", 50)
+        self.set_font("Arial", "I", 40)  # Puedes ajustar tamaño
 
-        center_x = self.w / 2
-        center_y = self.h / 2
-
-        # Calcular ángulo
-        angle = 45
-        angle_rad = math.radians(angle)
-        c = math.cos(angle_rad)
-        s = math.sin(angle_rad)
+        # Posición: parte inferior izquierda (firma vendedor)
+        pos_x = 25   # margen izquierdo aproximado
+        pos_y = 250  # cerca del pie, puedes ajustar
 
         # Guardar estado gráfico
         self._out("q")
 
-        # Traslación al centro
-        self._out(f"1 0 0 1 {center_x * self.k} {(self.h - center_y) * self.k} cm")
-        # Rotación
+        # Traslación a la posición deseada
+        self._out(f"1 0 0 1 {pos_x * self.k} {(self.h - pos_y) * self.k} cm")
+
+        # Opcional: pequeña rotación, si quieres
+        angle = 0
+        angle_rad = math.radians(angle)
+        c = math.cos(angle_rad)
+        s = math.sin(angle_rad)
         self._out(f"{c:.5f} {s:.5f} {-s:.5f} {c:.5f} 0 0 cm")
-        # Traslación para centrar texto
-        self._out("1 0 0 1 -50 0 cm")  # Ajustar horizontal (puedes mover -50 si quieres afinar)
 
         # Dibujar texto
         self.cell(100, 10, text, align="C")
@@ -131,7 +129,7 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.cell(30, 7, "", ln=0)
     pdf.cell(80, 7, f"RUT: {data.get('rut_comprador', '').upper()}", ln=1, align="C")
 
-    # 💧 Colocar la marca de agua al final (o al principio si quieres)
+    # 💧 Colocar la marca sobre la firma del vendedor
     if not admin:
         pdf.add_watermark("CYBERNOVA")
 
