@@ -2,17 +2,13 @@ from fpdf import FPDF
 import math
 
 class PDF(FPDF):
-    def add_watermark(self, text):
+    def add_watermark_custom(self, text, pos_x, pos_y, angle=0, font_size=40):
         # Guardar posición original
         saved_x = self.x
         saved_y = self.y
 
         self.set_text_color(200, 200, 200)
-        self.set_font("Arial", "I", 70)  # Puedes ajustar tamaño
-
-        # Posición: parte inferior izquierda (firma vendedor)
-        pos_x = 25   # margen izquierdo aproximado
-        pos_y = 280  # cerca del pie, puedes ajustar
+        self.set_font("Arial", "I", font_size)
 
         # Guardar estado gráfico
         self._out("q")
@@ -20,8 +16,7 @@ class PDF(FPDF):
         # Traslación a la posición deseada
         self._out(f"1 0 0 1 {pos_x * self.k} {(self.h - pos_y) * self.k} cm")
 
-        # Opcional: pequeña rotación, si quieres
-        angle = 0
+        # Rotación opcional
         angle_rad = math.radians(angle)
         c = math.cos(angle_rad)
         s = math.sin(angle_rad)
@@ -129,9 +124,13 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.cell(30, 7, "", ln=0)
     pdf.cell(80, 7, f"RUT: {data.get('rut_comprador', '').upper()}", ln=1, align="C")
 
-    # 💧 Colocar la marca sobre la firma del vendedor
+    # 💧 Marcas de agua si no es admin
     if not admin:
-        pdf.add_watermark("CYBERNOVA")
+        # Marca sobre la firma del vendedor (abajo izquierda)
+        pdf.add_watermark_custom("CYBERNOVA", pos_x=25, pos_y=250, angle=0, font_size=40)
+
+        # Marca en el centro
+        pdf.add_watermark_custom("CYBERNOVA", pos_x=pdf.w / 2, pos_y=pdf.h / 2, angle=45, font_size=50)
 
     pdf_output = pdf.output(dest="S").encode("latin1")
     return pdf_output
