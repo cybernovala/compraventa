@@ -20,19 +20,21 @@ class PDF(FPDF):
 
         self._out(f"{c:.5f} {s:.5f} {-s:.5f} {c:.5f} {cx:.5f} {cy:.5f} cm")
 
-        # Ajuste de posición para el texto
-        self.set_xy(-50, 0)
-        self.cell(100, 10, text, align="C")
+        # Centramos con set_xy y un ancho más grande para el texto
+        self.set_xy(-100, 0)
+        self.cell(200, 20, text, align="C")
 
         self._out("Q")
-
-
 
 
 def generar_pdf_compraventa(data, admin=False):
     pdf = PDF()
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
+
+    # 💡 Colocar la marca de agua aquí, apenas se agrega la página
+    if not admin:
+        pdf.add_watermark("NOVANOVA")
 
     pdf.set_font("Arial", "B", 16)
     pdf.cell(0, 10, "CONTRATO DE COMPRAVENTA DE VEHÍCULO", ln=True, align="C")
@@ -81,8 +83,7 @@ def generar_pdf_compraventa(data, admin=False):
          f"NÚMERO DE SERIE (VIN): {data.get('vin', '').upper()}\n"
          f"PATENTE: {data.get('patente', '').upper()}\n"
          f"COLOR: {data.get('color', '').upper()}\n"
-         f"OTROS: {data.get('otros', '').upper()}"
-        ),
+         f"OTROS: {data.get('otros', '').upper()}"),
         ("SEGUNDA: PRECIO Y FORMA DE PAGO",
          f"EL PRECIO TOTAL DE LA COMPRAVENTA ES DE $ {data.get('monto', '').upper()}, QUE EL COMPRADOR PAGARÁ AL VENDEDOR DE LA SIGUIENTE FORMA:\n\n{data.get('forma_pago', '').upper()}"),
         ("TERCERA: ENTREGA DEL VEHÍCULO",
@@ -121,9 +122,6 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.cell(80, 7, f"RUT: {data.get('rut_vendedor', '').upper()}", ln=0, align="C")
     pdf.cell(30, 7, "", ln=0)
     pdf.cell(80, 7, f"RUT: {data.get('rut_comprador', '').upper()}", ln=1, align="C")
-
-    if not admin:
-        pdf.add_watermark("NOVANOVA")
 
     pdf_output = pdf.output(dest="S").encode("latin1")
     return pdf_output
