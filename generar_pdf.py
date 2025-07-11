@@ -37,7 +37,7 @@ def generar_pdf_compraventa(data, admin=False):
 
     fecha = data.get("fecha", "")
     pdf.set_font("Arial", "", 12)
-    pdf.cell(0, 10, f"EN LOS ÁNGELES A {fecha.upper()}", ln=True, align="L")
+    pdf.cell(0, 10, f"{fecha.upper()}", ln=True, align="R")
     pdf.ln(5)
 
     pdf.set_font("Arial", "B", 12)
