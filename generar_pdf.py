@@ -8,11 +8,11 @@ class PDF(FPDF):
         saved_y = self.y
 
         self.set_text_color(200, 200, 200)
-        self.set_font("Arial", "I", 40)  # Puedes ajustar tamaño
+        self.set_font("Arial", "I", 60)  # Puedes ajustar tamaño
 
         # Posición: parte inferior izquierda (firma vendedor)
         pos_x = 25   # margen izquierdo aproximado
-        pos_y = 270  # cerca del pie, puedes ajustar
+        pos_y = 273  # cerca del pie, puedes ajustar
 
         # Guardar estado gráfico
         self._out("q")
