@@ -5,31 +5,38 @@ class PDF(FPDF):
     def add_watermark(self, text):
         self.set_text_color(200, 200, 200)
         self.set_font("Arial", "I", 50)
+
+        # Guardar el estado gráfico
+        self._out("q")
+
+        # Centro de la página
         center_x = self.w / 2
         center_y = self.h / 2
 
-        self.rotate(45, x=center_x, y=center_y)
+        # Calcular ángulo
+        angle = 45
+        angle_rad = angle * math.pi / 180
+        c = round(math.cos(angle_rad), 5)
+        s = round(math.sin(angle_rad), 5)
 
-        # Posicionar correctamente
-        self.set_xy(center_x - 100, center_y - 25)
-        self.cell(200, 50, text, align="C")
+        # Convertir a coordenadas de usuario
+        cx = center_x * self.k
+        cy = (self.h - center_y) * self.k
 
-        self.rotate(0)
+        # Aplicar la matriz de transformación
+        self._out(f"{c:.5f} {s:.5f} {-s:.5f} {c:.5f} {cx:.5f} {cy:.5f} cm")
+
+        # Escribir texto centrado en la nueva coordenada
+        self.set_xy(-50, 0)  # Ajusta si quieres mover más a izquierda/derecha
+        self.cell(100, 10, text, align="C")
+
+        # Restaurar estado gráfico
+        self._out("Q")
 
     def rotate(self, angle, x=None, y=None):
-        if angle != 0:
-            angle_rad = angle * math.pi / 180
-            c = round(math.cos(angle_rad), 5)
-            s = round(math.sin(angle_rad), 5)
-            if x is None:
-                x = self.x
-            if y is None:
-                y = self.y
-            cx = x * self.k
-            cy = (self.h - y) * self.k
-            self._out(f'q {c:.5f} {s:.5f} {-s:.5f} {c:.5f} {cx:.5f} {cy:.5f} cm')
-        else:
-            self._out('Q')
+        # Ya no se necesita esta función separada si usas el método nuevo
+        pass
+
 
 
 def generar_pdf_compraventa(data, admin=False):
