@@ -106,7 +106,7 @@ def generar_pdf_compraventa(data, admin=False):
         pdf.multi_cell(0, 7, texto)
         pdf.ln(3)
 
-    pdf.ln(15)
+    pdf.ln(25)
     pdf.cell(80, 10, "_" * 30, ln=0, align="C")
     pdf.cell(30, 10, "", ln=0)
     pdf.cell(80, 10, "_" * 30, ln=1, align="C")
