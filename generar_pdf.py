@@ -129,12 +129,12 @@ def generar_pdf_compraventa(data, admin=False):
         # Marca sobre la firma del vendedor (abajo izquierda)
         pdf.add_watermark_custom(
             "Puede eliminar esta marca de agua, enviando el archivo a bartese823@gmail.com",
-            pos_x=25, pos_y=275, angle=0, font_size=14
+            pos_x=25, pos_y=255, angle=0, font_size=14
         )
 
         pdf.add_watermark_custom(
             "O al WhatsApp +56 9 66648585",
-            pos_x=25, pos_y=285, angle=0, font_size=14
+            pos_x=25, pos_y=265, angle=0, font_size=14
         )
 
         # Marca en el centro
