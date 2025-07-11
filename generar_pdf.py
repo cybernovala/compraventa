@@ -12,7 +12,7 @@ class PDF(FPDF):
 
         # Posición: parte inferior izquierda (firma vendedor)
         pos_x = 25   # margen izquierdo aproximado
-        pos_y = 250  # cerca del pie, puedes ajustar
+        pos_y = 270  # cerca del pie, puedes ajustar
 
         # Guardar estado gráfico
         self._out("q")
