@@ -127,8 +127,8 @@ def generar_pdf_compraventa(data, admin=False):
     # 💧 Marcas de agua si no es admin
     if not admin:
         # Marca sobre la firma del vendedor (abajo izquierda)
-        pdf.add_watermark_custom("""Puede elimnar esta marca de agua , enviando el archivo a 
-        bartese823@gmail.com o al WhatsApp +56 9 66648585 """, pos_x=25, pos_y=273, angle=0, font_size=12)
+        pdf.add_watermark_custom("Puede elimnar esta marca de agua , enviando el archivo a "
+        "bartese823@gmail.com o al WhatsApp +56 9 66648585 ", pos_x=25, pos_y=273, angle=0, font_size=12)
 
         # Marca en el centro
         pdf.add_watermark_custom("CYBERNOVA", pos_x=pdf.w / 2, pos_y=pdf.h / 2, angle=45, font_size=50)
