@@ -121,7 +121,7 @@ def generar_pdf_compraventa(data, admin=False):
     pdf.cell(80, 7, f"RUT: {data.get('rut_comprador', '').upper()}", ln=1, align="C")
 
     if not admin:
-        pdf.add_watermark("CYBERNOVA")
+        pdf.add_watermark("NOVANOVA")
 
     pdf_output = pdf.output(dest="S").encode("latin1")
     return pdf_output
